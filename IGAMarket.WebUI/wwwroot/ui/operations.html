@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İşlemler - Süpermarket POS Sistemi</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="main-menu">
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <h1>İşlemler</h1>
+                <a href="index.html" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left"></i> Ana Sayfa
+                </a>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="menu-card operation-card" onclick="window.location.href='product-entry.html'">
+                        <div class="card-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h3>Ürün Girişi</h3>
+                        <p>Yeni ürün ekleme ve stok girişi yapma</p>
+                        <div class="operation-info">
+                            <span class="badge bg-info">Stok Yönetimi</span>
+                            <span class="operation-detail">Son giriş: Bugün</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="menu-card operation-card" onclick="window.location.href='donation-entry.html'">
+                        <div class="card-icon">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <h3>Hibe Giriş İşlemleri</h3>
+                        <p>Hibe ürün girişi ve takibi</p>
+                        <div class="operation-info">
+                            <span class="badge bg-warning">Hibe Yönetimi</span>
+                            <span class="operation-detail">Son hibe: Bugün</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
