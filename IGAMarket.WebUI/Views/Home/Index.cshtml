@@ -2,7 +2,52 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container flex-grow-1">
+    <div class="main-menu">
+        <h1 class="text-center mb-5">IGA Market POS Sistemi</h1>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="menu-card">
+                    <a asp-area="" asp-action="SatisIndex">
+                    <div class="card-icon">
+                        <i class="fas fa-cash-register"></i>
+                    </div>
+                    <h3>Satış</h3>
+                    <p>Yeni satış işlemi başlat</p>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="menu-card">
+                    <a asp-area="" asp-controller="Home" asp-action="IslemlerIndex">
+                        <div class="card-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <h3>İşlemler</h3>
+                        <p>Genel işlemler menüsü</p>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="menu-card" >   
+                    <a asp-area="" asp-controller="Home" asp-action="ClosingIndex">
+                    <div class="card-icon">
+                        <i class="fas fa-door-closed"></i>
+                    </div>
+                    <h3>Kapanış</h3>
+                    <p>Gün sonu kapanış işlemleri</p>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="menu-card" onclick="window.location.href='report.html'">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3>Rapor</h3>
+                    <p>Satış raporlarını görüntüle</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

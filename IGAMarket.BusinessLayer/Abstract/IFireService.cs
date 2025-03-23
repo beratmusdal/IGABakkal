@@ -1,4 +1,5 @@
-﻿using IGAMarket.EntityLayer.Concrete;
+﻿using IGAMarket.DtoLayer.FireDtos;
+using IGAMarket.EntityLayer.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,7 @@ namespace IGAMarket.BusinessLayer.Abstract
 {
     public interface IFireService : IGenericService<Fire>
     {
+        List<SelectFireDto> GetDetailList();
+        void UpdateById(long id);
     }
 }

@@ -14,11 +14,11 @@ namespace IGAMarket.DataAccessLayer.Concrete
         {
             optionsBuilder.UseSqlServer(@"Server=DESKTOP-JDO821C\SQLEXPRESS;Database=IGABakkal;Trusted_Connection=True;TrustServerCertificate=True");
         }
-
         public DbSet<Product> Products { get; set; }
         public DbSet<Sale> Sales { get; set; }
         public DbSet<SaleItem> SaleItems { get; set; }
         public DbSet<Fire> Fires { get; set; }
         public DbSet<DailyClosur> DailyClosures { get; set; }
+        
     }
 }

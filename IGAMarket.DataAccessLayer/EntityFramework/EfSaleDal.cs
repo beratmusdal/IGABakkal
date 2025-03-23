@@ -1,4 +1,5 @@
 ﻿using IGAMarket.DataAccessLayer.Abstract;
+using IGAMarket.DataAccessLayer.Concrete;
 using IGAMarket.DataAccessLayer.Repositories;
 using IGAMarket.EntityLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ namespace IGAMarket.DataAccessLayer.EntityFramework
 {
     public class EfSaleDal : GenericRepository<Sale>, ISaleDal
     {
-        public EfSaleDal(DbContext context) : base(context)
+        public EfSaleDal(Context context) : base(context)
         {
         }
     }

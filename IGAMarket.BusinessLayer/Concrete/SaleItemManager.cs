@@ -33,13 +33,13 @@ namespace IGAMarket.BusinessLayer.Concrete
         // ID ile bir Satış Kalemleri kaydını almak
         public SaleItem TGetById(int id)
         {
-            return _SaleItemDal.GetById(id);
+            return _SaleItemDal.Get(x => x.Id == id);
         }
 
         // Tüm Satış Kalemleriları listeleme
         public List<SaleItem> TGetList()
         {
-            return _SaleItemDal.GetList();
+            return _SaleItemDal.GetAll();
         }
     }
 }

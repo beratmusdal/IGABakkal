@@ -10,6 +10,10 @@ body {
     min-height: 100vh;
 }
 
+a {
+    text-decoration: none;
+}
+
 /* Ana Menü Stilleri */
 .main-menu {
     padding: 40px 0;

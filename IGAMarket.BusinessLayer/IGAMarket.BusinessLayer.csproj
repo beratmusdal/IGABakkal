@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IGAMarket.DataAccessLayer\IGAMarket.DataAccessLayer.csproj" />
+    <ProjectReference Include="..\IGAMarket.DtoLayer\IGAMarket.DtoLayer.csproj" />
     <ProjectReference Include="..\IGAMarket.EntityLayer\IGAMarket.EntityLayer.csproj" />
   </ItemGroup>
 

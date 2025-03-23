@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Closing Page";
+}
+
+<div class="main-menu">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1>Kapanış İşlemleri</h1>
+        <a asp-action="Index" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Ana Sayfa
+        </a>
+    </div>
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="menu-card closing-card" onclick="window.location.href='daily-closing.html'">
+                <div class="card-icon">
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+                <h3>Gün Sonu Kapanışı</h3>
+                <p>Günlük satış ve işlem raporlarını görüntüle</p>
+                <div class="closing-info">
+                    <span class="badge bg-primary">Günlük</span>
+                    <span class="closing-time">Son kapanış: 23:59</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="menu-card closing-card" onclick="window.location.href='monthly-closing.html'">
+                <div class="card-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <h3>Ay Sonu Kapanışı</h3>
+                <p>Aylık satış ve işlem raporlarını görüntüle</p>
+                <div class="closing-info">
+                    <span class="badge bg-success">Aylık</span>
+                    <span class="closing-time">Son kapanış: Ay sonu</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

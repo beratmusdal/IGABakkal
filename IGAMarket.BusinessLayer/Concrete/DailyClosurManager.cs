@@ -30,12 +30,12 @@ namespace IGAMarket.BusinessLayer.Concrete
 
         public DailyClosur TGetById(int id)
         {
-            return _dailyClosurDal.GetById(id);
+            return _dailyClosurDal.Get(x => x.Id == id);
         }
 
         public List<DailyClosur> TGetList()
         {
-            return _dailyClosurDal.GetList();
+            return _dailyClosurDal.GetAll();
         }
     }
 }

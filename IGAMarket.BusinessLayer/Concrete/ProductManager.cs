@@ -1,5 +1,6 @@
 ﻿using IGAMarket.BusinessLayer.Abstract;
 using IGAMarket.DataAccessLayer.Abstract;
+using IGAMarket.DtoLayer.FireDtos;
 using IGAMarket.EntityLayer.Concrete;
 
 namespace IGAMarket.BusinessLayer.Concrete
@@ -7,6 +8,7 @@ namespace IGAMarket.BusinessLayer.Concrete
     public class ProductManager : IProductService
     {
         private readonly IProductDal _ProductDal;
+
         public ProductManager(IProductDal ProductDal)
         {
             _ProductDal = ProductDal;
@@ -33,13 +35,14 @@ namespace IGAMarket.BusinessLayer.Concrete
         // ID ile bir Ürünler kaydını almak
         public Product TGetById(int id)
         {
-            return _ProductDal.GetById(id);
+            return _ProductDal.Get(x=>x.Id==id);
         }
 
         // Tüm Ürünlerları listeleme
         public List<Product> TGetList()
         {
-            return _ProductDal.GetList();
+            return _ProductDal.GetAll();
         }
+
     }
 }

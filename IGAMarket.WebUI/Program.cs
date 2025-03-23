@@ -1,7 +1,30 @@
+﻿using IGAMarket.BusinessLayer.Abstract;
+using IGAMarket.BusinessLayer.Concrete;
+using IGAMarket.DataAccessLayer.Abstract;
+using IGAMarket.DataAccessLayer.Concrete;
+using IGAMarket.DataAccessLayer.EntityFramework;
+using IGAMarket.WebUI.Mapping;
+using System.Reflection;
+
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<Context>();
+
+
+// 🔹 Repository ve servis katmanlarını DI konteynerine ekleyelim
+builder.Services.AddScoped<IProductService, ProductManager>();
+builder.Services.AddScoped<IProductDal, EfProductDal>();
+
+builder.Services.AddScoped<IFireService, FireManager>();
+builder.Services.AddScoped<IFireDal, EfFireDal>();
+
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+//builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
 
