@@ -18,25 +18,42 @@ function completepay() {
 
 function handleEnterKey() {
     const barcodeInput = document.getElementById('barcodeInput');
-    const barcode = barcodeInput.value.trim();
-    if (barcode && !isNaN(barcode)) {
-        tempBarcode = barcode; // Barkodu geçici değişkene kaydet
-    } else {
-        tempBarcode = null; // Geçersiz barkod girilirse sıfırla
+
+
+    const barcode = barcodeInput.value;
+    
+    if (barcodeInput.value.length == 13) {
+        addToCart(barcode);
+        barcodeInput.value = '';
     }
 }
 
 
 
 
-function addToCart(barcode, name, salePrice, image) {
-    if (cart[barcode]) {
-        cart[barcode].quantity++; // If the product is already in the cart, increase the quantity
-    } else {
-        cart[barcode] = { barcode, name, salePrice: parseFloat(salePrice), image, quantity: 1 }; // Add new product to cart
+function addToCart(barcode) {
+    // Ürünün HTML'deki ilgili elemanını bul
+    const productElement = document.querySelector(`.product-card[data-id="${barcode}"]`);
+
+    if (!productElement) {
+        console.error("Ürün bulunamadı!");
+        return;
     }
+
+    // Ürün bilgilerini data-* attribute'larından al
+    const name = productElement.getAttribute('data-name');
+    const salePrice = parseFloat(productElement.getAttribute('data-price'));
+    const image = productElement.getAttribute('data-image');
+
+    if (cart[barcode]) {
+        cart[barcode].quantity++;
+    } else {
+        cart[barcode] = { barcode, name, salePrice, image, quantity: 1 };
+    }
+
     updateCartDisplay();
 }
+
 
 // Update the cart display
 function updateCartDisplay() {
@@ -118,4 +135,3 @@ function removeItemCompletely(barcode) {
     delete cart[barcode];
     updateCartDisplay();
 }
-

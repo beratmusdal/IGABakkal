@@ -3,7 +3,6 @@
     ViewData["Title"] = "DailyClosingIndex";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<body>
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-8 mx-auto">
@@ -11,7 +10,7 @@
                 <div class="card-header bg-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <h3 class="mb-0">Gün Sonu Kapanışı</h3>
-                        <a asp-controller="Home" asp-action="ClosingIndex" class="btn btn-outline-primary">
+                        <a href="closing.html" class="btn btn-outline-primary">
                             <i class="fas fa-arrow-left"></i> Geri Dön
                         </a>
                     </div>
@@ -34,29 +33,60 @@
                         </div>
 
                         <div class="row mb-4">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label">Kapanış Yapan</label>
+                                    <input type="text" class="form-control" id="closingPerson" placeholder="Ad Soyad" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">POS Toplam Tutarı</label>
+                                    <label class="form-label">Toplam Satış</label>
                                     <div class="input-group">
-                                        <input type="number" class="form-control" id="posTotal" step="0.01" required>
+                                        <input type="number" class="form-control" id="totalSales" step="0.01" required>
                                         <span class="input-group-text">TL</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">İade Tutarı</label>
+                                    <label class="form-label">Toplam İade</label>
                                     <div class="input-group">
-                                        <input type="number" class="form-control" id="refundTotal" step="0.01" required>
+                                        <input type="number" class="form-control" id="totalRefund" step="0.01" required>
                                         <span class="input-group-text">TL</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="form-group mb-4">
-                            <label class="form-label">Açıklama</label>
-                            <textarea class="form-control" id="description" rows="3"></textarea>
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Stok Sayımı</h5>
+                                    <button type="button" class="btn btn-primary btn-sm" id="addStockItem">
+                                        <i class="fas fa-plus"></i> Ürün Ekle
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table" id="stockCountTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Ürün Adı</th>
+                                                <th>Miktar</th>
+                                                <th>İşlem</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Ürünler JavaScript ile eklenecek -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="d-grid gap-2">
@@ -71,4 +101,142 @@
     </div>
 </div>
 
-</body>
+<!-- Ürün Ekleme Modal -->
+<div class="modal fade" id="addStockModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ürün Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Ürün Adı</label>
+                    <input type="text" class="form-control" id="productName" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Miktar</label>
+                    <input type="number" class="form-control" id="productQuantity" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-primary" id="saveStockItem">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let stockItems = [];
+    const addStockModal = new bootstrap.Modal(document.getElementById('addStockModal'));
+
+    // Ürün ekleme modalını aç
+    document.getElementById('addStockItem').addEventListener('click', function() {
+        addStockModal.show();
+    });
+
+    // Ürün kaydetme
+    document.getElementById('saveStockItem').addEventListener('click', function() {
+        const productName = document.getElementById('productName').value;
+        const quantity = document.getElementById('productQuantity').value;
+
+        if (!productName || !quantity) {
+            alert('Lütfen tüm alanları doldurun!');
+            return;
+        }
+
+        stockItems.push({
+            name: productName,
+            quantity: parseInt(quantity)
+        });
+
+        updateStockTable();
+        addStockModal.hide();
+
+        // Formu temizle
+        document.getElementById('productName').value = '';
+        document.getElementById('productQuantity').value = '';
+    });
+
+    // Stok tablosunu güncelle
+    function updateStockTable() {
+        const tbody = document.querySelector('#stockCountTable tbody');
+        tbody.innerHTML = '';
+
+        stockItems.forEach((item, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${item.name}</td>
+                <td>${item.quantity}</td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteStockItem(${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // Ürün silme
+    window.deleteStockItem = function(index) {
+        if (confirm('Bu ürünü silmek istediğinizden emin misiniz?')) {
+            stockItems.splice(index, 1);
+            updateStockTable();
+        }
+    };
+
+    // Form gönderimi
+    document.getElementById('dailyClosingForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = {
+            date: document.getElementById('closingDate').value,
+            time: document.getElementById('closingTime').value,
+            closingPerson: document.getElementById('closingPerson').value,
+            totalSales: parseFloat(document.getElementById('totalSales').value),
+            totalRefund: parseFloat(document.getElementById('totalRefund').value),
+            stockItems: stockItems
+        };
+
+        console.log('Form verisi:', formData); // Debug için
+
+        // Mevcut kapanışları al
+        let dailyClosings = JSON.parse(localStorage.getItem('dailyClosings') || '[]');
+        console.log('Mevcut kapanışlar:', dailyClosings); // Debug için
+
+        // Aynı tarihe ait kapanış varsa güncelle, yoksa yeni ekle
+        const existingIndex = dailyClosings.findIndex(c => c.date === formData.date);
+        if (existingIndex !== -1) {
+            dailyClosings[existingIndex] = formData;
+        } else {
+            dailyClosings.push(formData);
+        }
+
+        console.log('Güncellenmiş kapanışlar:', dailyClosings); // Debug için
+
+        // Kapanışları kaydet
+        localStorage.setItem('dailyClosings', JSON.stringify(dailyClosings));
+        console.log('localStorage kaydedildi'); // Debug için
+
+        // Başarılı mesajı göster
+        alert('Gün sonu kapanışı başarıyla kaydedildi!');
+
+        // Formu temizle
+        this.reset();
+        stockItems = [];
+        updateStockTable();
+
+        // Kapanış sayfasına yönlendir
+        window.location.href = 'closing.html';
+    });
+
+    // Sayfa yüklendiğinde bugünün tarihini otomatik doldur
+    window.addEventListener('load', function() {
+        const today = new Date();
+        document.getElementById('closingDate').value = today.toISOString().split('T')[0];
+        document.getElementById('closingTime').value = today.toTimeString().slice(0,5);
+    });
+</script>

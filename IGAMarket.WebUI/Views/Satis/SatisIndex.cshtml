@@ -16,7 +16,7 @@
                     </a>
                 </div>
                 <div class="barcode-input">
-                    <input type="text" id="barcodeInput" class="form-control" onkeydown="handleEnterKey(event)" placeholder="Barkod Okutunuz...">
+                    <input type="text" id="barcodeInput" class="form-control" onkeydown="handleEnterKey()" placeholder="Barkod Okutunuz...">
                 </div>
                 <div class="category-buttons mb-3">
                     <a class="btn btn-outline-primary me-2 @(Model.EnumType == 0 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="0">Tümü</a>
@@ -31,7 +31,12 @@
                 <div class="product-grid" id="productGrid">
                     @foreach (var item in Model.ResultProductDto)
                     {
-                        <div class="product-card" data-id="@item.Id" data-name="@item.Name" data-price="@item.SalePrice" data-image="@item.ImageUrl">
+                        <div class="product-card"
+                             data-id="@item.Barcode"
+                             data-name="@item.Name"
+                             data-price="@item.SalePrice"
+                             data-image="@item.ImageUrl">
+
                             <div class="product-content">
                                 <div class="product-image">
                                     <img src="@item.ImageUrl" alt="@item.Name">
@@ -41,10 +46,13 @@
                                     <span class="price">@item.SalePrice.ToString("C")</span>
                                 </div>
                             </div>
-                            <button class="btn btn-primary mt-2 add-to-cart-button" onclick="addToCart('@item.Id', '@item.Name', '@item.SalePrice', '@item.ImageUrl')">
+
+                            <button class="btn btn-primary mt-2 add-to-cart-button"
+                                    onclick="addToCart('@item.Barcode')">
                                 Sepete Ekle
                             </button>
                         </div>
+
                     }
 
                 </div>
