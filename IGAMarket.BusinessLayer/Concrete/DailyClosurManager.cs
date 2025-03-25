@@ -1,6 +1,8 @@
 ﻿using IGAMarket.BusinessLayer.Abstract;
 using IGAMarket.DataAccessLayer.Abstract;
+using IGAMarket.DataAccessLayer.EntityFramework;
 using IGAMarket.EntityLayer.Concrete;
+using System.Linq.Expressions;
 
 namespace IGAMarket.BusinessLayer.Concrete
 {
@@ -36,6 +38,16 @@ namespace IGAMarket.BusinessLayer.Concrete
         public List<DailyClosur> TGetList()
         {
             return _dailyClosurDal.GetAll();
+        }
+
+        public List<DailyClosur> GetAll(Expression<Func<DailyClosur, bool>> filter = null)
+        {
+            return _dailyClosurDal.GetAll(filter);
+        }
+
+        public DailyClosur Get(Expression<Func<DailyClosur, bool>> filter)
+        {
+            return _dailyClosurDal.Get(filter);
         }
     }
 }

@@ -1,0 +1,98 @@
+﻿
+@{
+    ViewData["Title"] = "MonthlyClosingIndex";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card monthly-closing-card">
+                <div class="card-header bg-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0">Ay Sonu Kapanışı</h3>
+                        <a asp-controller="Home" asp-action="ClosingIndex" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left"></i> Geri Dön
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Ay Seçimi ve Özet Bilgiler -->
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Kapanış Yapılacak Ay</label>
+                                <input type="month" class="form-control" id="closingMonth" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Toplam Gün Sayısı</label>
+                                <input type="number" class="form-control" id="totalDays" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Kapanış Tarihi</label>
+                                <input type="date" class="form-control" id="closingDate" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gün Sonu Kapanışları Tablosu -->
+                    <div class="table-responsive mb-4">
+                        <table id="dailyClosingsTable" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Tarih</th>
+                                    <th>POS Toplam</th>
+                                    <th>İade Tutarı</th>
+                                    <th>Net Tutar</th>
+                                    <th>Durum</th>
+                                    <th>İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- JavaScript ile doldurulacak -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Stok Sayım Formu -->
+                    <div class="stock-count-section mb-4">
+                        <h4 class="mb-3">Stok Sayımı</h4>
+                        <div class="table-responsive">
+                            <table id="stockCountTable" class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Barkod</th>
+                                        <th>Ürün Adı</th>
+                                        <th>Mevcut Stok</th>
+                                        <th>Sayılan Stok</th>
+                                        <th>Fark</th>
+                                        <th>Açıklama</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- JavaScript ile doldurulacak -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Onay ve Kaydet Butonu -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="confirmClosing">
+                            <label class="form-check-label" for="confirmClosing">
+                                Tüm verilerin doğruluğunu onaylıyorum
+                            </label>
+                        </div>
+                        <button type="button" class="btn btn-success btn-lg" id="saveMonthlyClosing">
+                            <i class="fas fa-save"></i> Ay Sonu Kapanışını Kaydet
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

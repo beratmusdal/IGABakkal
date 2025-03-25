@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ay Sonu Kapanışı - Süpermarket POS Sistemi</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card monthly-closing-card">
+                    <div class="card-header bg-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="mb-0">Ay Sonu Kapanışı</h3>
+                            <a href="closing.html" class="btn btn-outline-primary">
+                                <i class="fas fa-arrow-left"></i> Geri Dön
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Ay Seçimi ve Özet Bilgiler -->
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Kapanış Yapılacak Ay</label>
+                                    <input type="month" class="form-control" id="closingMonth" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Toplam Gün Sayısı</label>
+                                    <input type="number" class="form-control" id="totalDays" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Kapanış Tarihi</label>
+                                    <input type="date" class="form-control" id="closingDate" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gün Sonu Kapanışları Tablosu -->
+                        <div class="table-responsive mb-4">
+                            <table id="dailyClosingsTable" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Tarih</th>
+                                        <th>POS Toplam</th>
+                                        <th>İade Tutarı</th>
+                                        <th>Net Tutar</th>
+                                        <th>Durum</th>
+                                        <th>İşlem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- JavaScript ile doldurulacak -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Stok Sayım Formu -->
+                        <div class="stock-count-section mb-4">
+                            <h4 class="mb-3">Stok Sayımı</h4>
+                            <div class="table-responsive">
+                                <table id="stockCountTable" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Barkod</th>
+                                            <th>Ürün Adı</th>
+                                            <th>Mevcut Stok</th>
+                                            <th>Sayılan Stok</th>
+                                            <th>Fark</th>
+                                            <th>Açıklama</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- JavaScript ile doldurulacak -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Onay ve Kaydet Butonu -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="confirmClosing">
+                                <label class="form-check-label" for="confirmClosing">
+                                    Tüm verilerin doğruluğunu onaylıyorum
+                                </label>
+                            </div>
+                            <button type="button" class="btn btn-success btn-lg" id="saveMonthlyClosing">
+                                <i class="fas fa-save"></i> Ay Sonu Kapanışını Kaydet
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        // Örnek ürün verileri (gerçek uygulamada API'den gelecek)
+        const products = [
+            {
+                barcode: '8690504037554',
+                name: 'Ülker Çikolata',
+                currentStock: 100,
+                countedStock: 0,
+                difference: 0,
+                note: ''
+            },
+            // Diğer ürünler...
+        ];
+
+        // Sayfa yüklendiğinde
+        $(document).ready(function() {
+            // DataTable'ları başlat
+            $('#dailyClosingsTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/tr.json'
+                }
+            });
+
+            $('#stockCountTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/tr.json'
+                }
+            });
+
+            // Ay seçildiğinde
+            $('#closingMonth').change(function() {
+                const selectedDate = new Date($(this).val());
+                const lastDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0);
+                
+                $('#totalDays').val(lastDay.getDate());
+                $('#closingDate').val(lastDay.toISOString().split('T')[0]);
+                
+                // Seçilen aya ait gün sonu kapanışlarını yükle
+                loadDailyClosings(selectedDate);
+                loadProducts();
+            });
+
+            // Stok sayımı değiştiğinde
+            $(document).on('input', '.counted-stock', function() {
+                const row = $(this).closest('tr');
+                const currentStock = parseFloat(row.find('.current-stock').text());
+                const countedStock = parseFloat($(this).val()) || 0;
+                const difference = countedStock - currentStock;
+                
+                row.find('.stock-difference').text(difference);
+            });
+
+            // Ay sonu kapanışını kaydet
+            $('#saveMonthlyClosing').click(function() {
+                if (!$('#confirmClosing').is(':checked')) {
+                    alert('Lütfen verilerin doğruluğunu onaylayın!');
+                    return;
+                }
+
+                // Stok sayım verilerini topla
+                const stockCounts = [];
+                $('#stockCountTable tbody tr').each(function() {
+                    const row = $(this);
+                    stockCounts.push({
+                        barcode: row.find('td:eq(0)').text(),
+                        name: row.find('td:eq(1)').text(),
+                        currentStock: parseFloat(row.find('.current-stock').text()),
+                        countedStock: parseFloat(row.find('.counted-stock').val()) || 0,
+                        difference: parseFloat(row.find('.stock-difference').text()),
+                        note: row.find('.stock-note').val()
+                    });
+                });
+
+                // Ay sonu kapanış verilerini kaydet
+                const monthlyClosing = {
+                    month: $('#closingMonth').val(),
+                    closingDate: $('#closingDate').val(),
+                    stockCounts: stockCounts
+                };
+
+                // Mevcut ay sonu kapanışlarını al
+                let monthlyClosings = JSON.parse(localStorage.getItem('monthlyClosings') || '[]');
+                
+                // Yeni kapanışı ekle
+                monthlyClosings.push(monthlyClosing);
+                
+                // Güncellenmiş listeyi kaydet
+                localStorage.setItem('monthlyClosings', JSON.stringify(monthlyClosings));
+
+                alert('Ay sonu kapanışı başarıyla kaydedildi!');
+                window.location.href = 'closing.html';
+            });
+        });
+
+        // Gün sonu kapanışlarını yükle
+        function loadDailyClosings(selectedDate) {
+            const tbody = $('#dailyClosingsTable tbody');
+            tbody.empty();
+
+            // localStorage'dan gün sonu kapanışlarını al
+            const dailyClosings = JSON.parse(localStorage.getItem('dailyClosings') || '[]');
+            
+            // Seçilen aya ait kapanışları filtrele
+            const selectedMonth = selectedDate.getMonth();
+            const selectedYear = selectedDate.getFullYear();
+            
+            const filteredClosings = dailyClosings.filter(closing => {
+                const closingDate = new Date(closing.date);
+                return closingDate.getMonth() === selectedMonth && 
+                       closingDate.getFullYear() === selectedYear;
+            });
+
+            filteredClosings.forEach(closing => {
+                const netTotal = closing.posTotal - closing.refundTotal;
+                const row = `
+                    <tr>
+                        <td>${closing.date}</td>
+                        <td>${closing.posTotal.toFixed(2)} TL</td>
+                        <td>${closing.refundTotal.toFixed(2)} TL</td>
+                        <td>${netTotal.toFixed(2)} TL</td>
+                        <td><span class="badge bg-success">${closing.status}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-info" onclick="viewDailyClosing('${closing.date}')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+        }
+
+        // Ürünleri yükle
+        function loadProducts() {
+            const tbody = $('#stockCountTable tbody');
+            tbody.empty();
+
+            products.forEach(product => {
+                const row = `
+                    <tr>
+                        <td>${product.barcode}</td>
+                        <td>${product.name}</td>
+                        <td class="current-stock">${product.currentStock}</td>
+                        <td>
+                            <input type="number" class="form-control counted-stock" 
+                                   value="${product.countedStock}" min="0">
+                        </td>
+                        <td class="stock-difference">${product.difference}</td>
+                        <td>
+                            <input type="text" class="form-control stock-note" 
+                                   value="${product.note}" placeholder="Not ekleyin...">
+                        </td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+        }
+
+        // Gün sonu kapanış detayını görüntüle
+        function viewDailyClosing(date) {
+            const dailyClosings = JSON.parse(localStorage.getItem('dailyClosings') || '[]');
+            const closing = dailyClosings.find(c => c.date === date);
+            
+            if (closing) {
+                const netTotal = closing.posTotal - closing.refundTotal;
+                alert(`
+                    Gün Sonu Kapanış Detayları:
+                    Tarih: ${closing.date}
+                    Saat: ${closing.time}
+                    POS Toplam: ${closing.posTotal.toFixed(2)} TL
+                    İade Tutarı: ${closing.refundTotal.toFixed(2)} TL
+                    Net Tutar: ${netTotal.toFixed(2)} TL
+                    Açıklama: ${closing.description}
+                `);
+            } else {
+                alert('Kapanış detayları bulunamadı!');
+            }
+        }
+    </script>
+</body>
+</html> 

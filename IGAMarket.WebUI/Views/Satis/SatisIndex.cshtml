@@ -1,0 +1,104 @@
+﻿@model IGAMarket.WebUI.Models.ProductModelView
+@{
+    ViewData["Title"] = "SatisIndex";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/js/SatisScript.js" asp-append-version="true"></script>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sol Taraf - Ürün Listesi -->
+        <div class="col-md-8">
+            <div class="product-section">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Ürünler</h2>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left"></i> Ana Sayfa
+                    </a>
+                </div>
+                <div class="barcode-input">
+                    <input type="text" id="barcodeInput" class="form-control" onkeydown="handleEnterKey(event)" placeholder="Barkod Okutunuz...">
+                </div>
+                <div class="category-buttons mb-3">
+                    <a class="btn btn-outline-primary me-2 @(Model.EnumType == 0 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="0">Tümü</a>
+                    <a class="btn btn-outline-primary me-2 @(Model.EnumType == 1 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="1">Genel</a>
+                    <a class="btn btn-outline-primary me-2 @(Model.EnumType == 2 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="2">Unlu Mamüller</a>
+                    <a class="btn btn-outline-primary me-2 @(Model.EnumType == 3 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="3">Tostlar</a>
+                    <a class="btn btn-outline-primary me-2 @(Model.EnumType == 4 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="4">Pizzalar</a>
+                    <a class="btn btn-outline-primary me-2 @(Model.EnumType == 5 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="5">Kahvaltı</a>
+                    <a class="btn btn-outline-primary me-2 @(Model.EnumType == 6 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="6">Diger</a>
+
+                </div>
+                <div class="product-grid" id="productGrid">
+                    @foreach (var item in Model.ResultProductDto)
+                    {
+                        <div class="product-card" data-id="@item.Id" data-name="@item.Name" data-price="@item.SalePrice" data-image="@item.ImageUrl">
+                            <div class="product-content">
+                                <div class="product-image">
+                                    <img src="@item.ImageUrl" alt="@item.Name">
+                                </div>
+                                <div class="product-info">
+                                    <h3>@item.Name</h3>
+                                    <span class="price">@item.SalePrice.ToString("C")</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary mt-2 add-to-cart-button" onclick="addToCart('@item.Id', '@item.Name', '@item.SalePrice', '@item.ImageUrl')">
+                                Sepete Ekle
+                            </button>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ Taraf - Sepet -->
+        <div class="col-md-4">
+            <div class="cart-section">
+                <h2 class="text-center mb-4">Sepetim</h2>
+                <div class="cart-items" id="cartItems">
+                    <!-- Sepet ürünleri JavaScript ile buraya eklenecek -->
+                </div>
+                <div class="cart-summary">
+                    <div class="total">
+                        <span>Toplam:</span>
+                        <span id="cartTotal">0.00 TL</span>
+                    </div>
+                    <button id="completePayment" class="btn btn-success w-100" onclick="completepay()">
+                        <i class="fas fa-credit-card"></i> Ödemeyi Tamamla
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .product-card {
+        display: flex;
+        flex-direction: column; /* İçeriği dikey olarak sırala */
+    }
+
+    .product-content {
+        flex-grow: 1; /* İçeriğin kartın boş alanını doldurmasını sağlar */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-image img {
+        max-width: 100%;
+        max-height: 200px;
+        object-fit: contain;
+        margin: 10px auto;
+        display: block;
+    }
+
+    .product-info {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .add-to-cart-button {
+        margin-top: auto; /* Butonu en alta yapıştırır */
+    }
+</style>

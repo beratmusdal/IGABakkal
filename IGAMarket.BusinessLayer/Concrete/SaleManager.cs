@@ -1,6 +1,8 @@
 ﻿using IGAMarket.BusinessLayer.Abstract;
 using IGAMarket.DataAccessLayer.Abstract;
+using IGAMarket.DataAccessLayer.EntityFramework;
 using IGAMarket.EntityLayer.Concrete;
+using System.Linq.Expressions;
 
 namespace IGAMarket.BusinessLayer.Concrete
 {
@@ -40,6 +42,16 @@ namespace IGAMarket.BusinessLayer.Concrete
         public List<Sale> TGetList()
         {
             return _saleDal.GetAll();
+        }
+
+        public List<Sale> GetAll(Expression<Func<Sale, bool>> filter = null)
+        {
+            return _saleDal.GetAll(filter);
+        }
+
+        public Sale Get(Expression<Func<Sale, bool>> filter)
+        {
+            return _saleDal.Get(filter);
         }
     }
 }

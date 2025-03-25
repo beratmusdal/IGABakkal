@@ -9,6 +9,6 @@ namespace IGAMarket.BusinessLayer.Abstract
 {
     public interface IProductService : IGenericService<Product>
     {
-       
+        void UpdateById(long id);  
     }
 }

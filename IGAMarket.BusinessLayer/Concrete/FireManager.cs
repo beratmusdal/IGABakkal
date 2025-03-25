@@ -1,10 +1,12 @@
 ﻿using IGAMarket.BusinessLayer.Abstract;
 using IGAMarket.DataAccessLayer.Abstract;
+using IGAMarket.DataAccessLayer.EntityFramework;
 using IGAMarket.DtoLayer.FireDtos;
 using IGAMarket.EntityLayer.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -82,6 +84,18 @@ namespace IGAMarket.BusinessLayer.Concrete
             var data = _FireDal.Get(x => x.Id == id);
             data.IsDeleted = true;
             _FireDal.Update(data);  
+        }
+
+        public List<Fire> GetAll(Expression<Func<Fire, bool>> filter = null)
+        {
+
+            return _FireDal.GetAll(filter);
+        }
+
+        public Fire Get(Expression<Func<Fire, bool>> filter)
+        {
+
+            return _FireDal.Get(filter);
         }
     }
 }

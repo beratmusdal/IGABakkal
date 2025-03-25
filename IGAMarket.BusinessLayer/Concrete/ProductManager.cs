@@ -2,6 +2,7 @@
 using IGAMarket.DataAccessLayer.Abstract;
 using IGAMarket.DtoLayer.FireDtos;
 using IGAMarket.EntityLayer.Concrete;
+using System.Linq.Expressions;
 
 namespace IGAMarket.BusinessLayer.Concrete
 {
@@ -41,8 +42,24 @@ namespace IGAMarket.BusinessLayer.Concrete
         // Tüm Ürünlerları listeleme
         public List<Product> TGetList()
         {
-            return _ProductDal.GetAll();
+            return _ProductDal.GetAll(x => !x.IsDeleted);
         }
 
+        public void UpdateById(long id)
+        {
+            var data = _ProductDal.Get(x => x.Id == id);
+            data.IsDeleted = true;
+            _ProductDal.Update(data);
+        }
+
+        public List<Product> GetAll(Expression<Func<Product, bool>> filter = null)
+        {
+            return _ProductDal.GetAll(filter);
+        }
+
+        public Product Get(Expression<Func<Product, bool>> filter)
+        {
+            return _ProductDal.Get(filter);
+        }
     }
 }

@@ -2,6 +2,7 @@
 using IGAMarket.DtoLayer.FireDtos;
 using IGAMarket.DtoLayer.ProductDtos;
 using IGAMarket.EntityLayer.Concrete;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace IGAMarket.WebUI.Mapping
 {
@@ -10,7 +11,9 @@ namespace IGAMarket.WebUI.Mapping
         public MappingProfile()
         {
             CreateMap<Product, AddProductDto>().ReverseMap();
+            CreateMap<Product, ResultProductDto>().ReverseMap();
             CreateMap<Fire, AddFireDto>().ReverseMap();
+
         }
     }
 }

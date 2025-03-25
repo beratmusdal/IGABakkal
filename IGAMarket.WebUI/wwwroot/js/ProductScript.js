@@ -11,7 +11,7 @@ $(document).ready(function () {
     });
 });
 
-function deleteFire(id) {
+function deleteProduct(id) {
     Swal.fire({
         title: "Silmek istediğinize emin misiniz?",
         text: "Hibe datası silinecektir.",
@@ -25,7 +25,7 @@ function deleteFire(id) {
         if (result.isConfirmed) {
             $.ajax({
                 type: 'POST',
-                url: '/Fire/DeleteFire',
+                url: '/Product/DeleteProduct',
                 data: { id: id },
                 success: function (response) {
                     if (response.success) {
@@ -38,7 +38,7 @@ function deleteFire(id) {
                         });
 
                         // Silinen satırı sayfadan kaldır
-                        $("#fire-row-" + id).fadeOut(500, function () {
+                        $("#product-row-" + id).fadeOut(500, function () {
                             $(this).remove();
                         });
 
