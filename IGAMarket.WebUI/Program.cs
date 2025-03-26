@@ -15,13 +15,17 @@ builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<Context>();
 
-
-// 🔹 Repository ve servis katmanlarını DI konteynerine ekleyelim
 builder.Services.AddScoped<IProductService, ProductManager>();
 builder.Services.AddScoped<IProductDal, EfProductDal>();
 
 builder.Services.AddScoped<IFireService, FireManager>();
 builder.Services.AddScoped<IFireDal, EfFireDal>();
+
+builder.Services.AddScoped<ISaleService, SaleManager>();
+builder.Services.AddScoped<ISaleDal, EfSaleDal>();
+
+builder.Services.AddScoped<ISaleItemService, SaleItemManager>();
+builder.Services.AddScoped<ISaleItemDal, EfSaleItemDal>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
