@@ -79,6 +79,24 @@
                                     </div>
                                 </div>
                             </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="category" class="form-label">Ürün Kategori</label>
+                                        <select class="form-control" name="Category" id="category" required>
+                                            <option value="" disabled selected>Kategori Seçiniz</option>
+                                            <option value="0">Genel</option>
+                                            <option value="1">İçecek</option>
+                                            <option value="2">Unlu Mamüller</option>
+                                            <option value="3">Pizza</option>
+                                            <option value="4">Kahvaltı</option>
+                                            <option value="5">Diğer</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Lütfen bir kategori seçiniz.
+                                        </div>
+                                    </div>
+                                </div>
+
                             <div class="col-12">
                                 <div class="form-group">
                                     <label for="productImage" class="form-label">Ürün Görseli</label>
@@ -124,7 +142,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Örnek veri -->
                                 @foreach (var item in Model.ResultProductDto)
                                 {
                                     count++;
