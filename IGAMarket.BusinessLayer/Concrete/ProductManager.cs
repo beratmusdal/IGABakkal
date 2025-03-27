@@ -62,10 +62,7 @@ namespace IGAMarket.BusinessLayer.Concrete
             return _ProductDal.Get(filter);
         }
 
-        public Product GetByBarcode(long barcode)
-        {
-            return _ProductDal.Get(x => x.Barcode == barcode && !x.IsDeleted);
-        }
+      
 
     }
 }

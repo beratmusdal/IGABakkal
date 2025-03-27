@@ -41,14 +41,14 @@ public class SatisController : Controller
     }
 
     [HttpGet]
-    public IActionResult GetProductByBarcode(long barcode)
+    public IActionResult GetProductByBarcode(string barcode)
     {
-        if (barcode <= 0)
+        if (barcode.Length < 13)
         {
             return BadRequest("Geçersiz barkod numarası.");
         }
 
-        var product = _productService.GetByBarcode(barcode); // GetByBarcode kullanılıyor
+        var product = _productService.Get(x => x.Barcode == barcode && !x.IsDeleted); 
 
         if (product == null)
         {
@@ -68,7 +68,6 @@ public class SatisController : Controller
         var productDtoList = _mapper.Map<List<ResultProductDto>>(products);
 
         var categories = _productService.TGetList().Select(x => x.Category).Distinct().ToList();
-
 
         return Json(new
         {
@@ -93,12 +92,12 @@ public class SatisController : Controller
 
         foreach(var item in saleDto.SaleItems)
         {
-            var product = _productService.GetByBarcode(item.Id);
+            var product = _productService.Get(x => x.Barcode == item.Barcode && !x.IsDeleted);
 
             // Ürün yoksa veya yanlış barkod geldiyse hata dön
             if (product == null)
             {
-                return BadRequest($"Ürün bulunamadı! (Barkod: {item.Id})");
+                return BadRequest($"Ürün bulunamadı! (Barkod: {item.Barcode})");
             }
 
             // Stok yeterli mi kontrol et
@@ -119,7 +118,6 @@ public class SatisController : Controller
             product.StockQuantity -= item.Quantity;
             _productService.TUpdate(product);
         }
-
 
         // Satışı veritabanına kaydet
         _saleService.TInsert(sale);

@@ -291,7 +291,7 @@ function completepay() {
 
     Object.values(cart).forEach(item => {
         cartItems.push({
-            productId: parseInt(item.barcode),
+            barcode: item.barcode,
             quantity: item.quantity,
             unitPrice: item.salePrice
         });
