@@ -188,6 +188,14 @@ function handleEnterKey() {
     }
 }
 
+function clearCart() {
+    if (confirm('Sepetteki tüm ürünleri silmek istediğinizden emin misiniz?')) {
+        cart = [];
+        localStorage.removeItem('currentCart');
+        updateCartDisplay();
+    }
+}
+
 function addToCart(barcode) {
     const productElement = document.querySelector(`.product-card[data-id="${barcode}"]`);
 

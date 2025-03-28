@@ -3,12 +3,18 @@ using IGAMarket.BusinessLayer.Concrete;
 using IGAMarket.DataAccessLayer.Abstract;
 using IGAMarket.DataAccessLayer.Concrete;
 using IGAMarket.DataAccessLayer.EntityFramework;
+using IGAMarket.EntityLayer.Concrete;
 using IGAMarket.WebUI.Mapping;
+using Microsoft.AspNetCore.Identity;
 using System.Reflection;
 
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<Context>()
+    .AddDefaultTokenProviders();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
@@ -45,6 +51,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseAuthentication();
 
 app.MapStaticAssets();
 
