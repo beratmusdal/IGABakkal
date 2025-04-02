@@ -4,6 +4,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <script src="~/js/SatisScript.js" asp-append-version="true"></script>
+<!-- Header -->
+
 <div class="container-fluid">
     <div class="row">
         <!-- Sol Taraf - Ürün Listesi -->
@@ -49,7 +51,7 @@
 
                             <button class="btn btn-primary mt-2 add-to-cart-button"
                                     onclick="addToCart('@item.Barcode')">
-                                Sepete Ekle
+                                Ürünü Ekle
                             </button>
                         </div>
 
@@ -62,7 +64,7 @@
         <!-- Sağ Taraf - Sepet -->
         <div class="col-md-4">
             <div class="cart-section">
-                <h2 class="text-center mb-4">Sepetim</h2>
+                <h2 class="text-center mb-4">Ürünler</h2>
                 <div class="cart-items" id="cartItems">
                     <!-- Sepet ürünleri JavaScript ile buraya eklenecek -->
                 </div>
@@ -71,27 +73,38 @@
                         <span>Toplam:</span>
                         <span id="cartTotal">0.00 TL</span>
                     </div>
-                    <button id="clearCartBtn" class="btn btn-outline-danger mb-2 w-100" onclick="clearCart()" style="display: none;">
-                        <i class="fas fa-trash-alt me-2"></i>Sepeti Temizle
+                    <button id="clearCartBtn" class="btn btn-outline-danger mb-2 w-100" onclick="clearCart()">
+                        <i class="fas fa-trash-alt me-2"></i>Temizle
                     </button>
-                    <button id="completePayment" class="btn btn-success w-100" onclick="completepay()">
+                    <button id="completePayment" class="btn btn-success w-100">
                         <i class="fas fa-credit-card"></i> Ödemeyi Tamamla
                     </button>
                 </div>
             </div>
         </div>
     </div>
+    </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const headerNav = document.querySelector('.header-nav');
 
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                headerNav.classList.toggle('show');
+            });
+        }
+</script>
 
 <style>
     .product-card {
         display: flex;
-        flex-direction: column; /* İçeriği dikey olarak sırala */
+        flex-direction: column; 
     }
 
     .product-content {
-        flex-grow: 1; /* İçeriğin kartın boş alanını doldurmasını sağlar */
+        flex-grow: 1; 
         display: flex;
         flex-direction: column;
     }
@@ -110,6 +123,6 @@
     }
 
     .add-to-cart-button {
-        margin-top: auto; /* Butonu en alta yapıştırır */
+        margin-top: auto; 
     }
 </style>

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using IGAMarket.DtoLayer.FireDtos;
 using IGAMarket.DtoLayer.ProductDtos;
+using IGAMarket.DtoLayer.UserDtos;
 using IGAMarket.EntityLayer.Concrete;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
@@ -13,6 +14,7 @@ namespace IGAMarket.WebUI.Mapping
             CreateMap<Product, AddProductDto>().ReverseMap();
             CreateMap<Product, ResultProductDto>().ReverseMap();
             CreateMap<Fire, AddFireDto>().ReverseMap();
+            CreateMap<User, CreateUserDto>();
 
         }
     }

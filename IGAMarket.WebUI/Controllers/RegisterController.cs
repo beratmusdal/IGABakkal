@@ -30,11 +30,14 @@ namespace IGAMarket.WebUI.Controllers
                 return View();
             }
 
-            var user = _mapper.Map<User>(createUserDto);
+            var user = new User()
+            {
+                Name = createUserDto.Name,
+                UserName = createUserDto.UserName,
+                Email = createUserDto.Email,                
 
-            // Kullanıcı oluştur
+            };
             var result = await _userManager.CreateAsync(user, createUserDto.Password);
-
             if (result.Succeeded)
             {
                 return RedirectToAction("LoginIndex", "Login");
