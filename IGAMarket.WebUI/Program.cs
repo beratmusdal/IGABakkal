@@ -6,21 +6,32 @@ using IGAMarket.DataAccessLayer.EntityFramework;
 using IGAMarket.EntityLayer.Concrete;
 using IGAMarket.WebUI.Mapping;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
-
-
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<Context>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<Context>()
     .AddDefaultTokenProviders();
 
-// Add services to the container.
-builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
-builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<Context>();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Login/LoginIndex"; // Login yapılmadan erişilirse buraya yönlendirme
+    options.AccessDeniedPath = "/Login/LoginIndex"; // Erişim izni olmayanlar bu sayfaya yönlendirilecek
+});
+
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(new AuthorizeFilter()); 
+}).AddRazorRuntimeCompilation();
+
+// Dependency Injection
 builder.Services.AddScoped<IProductService, ProductManager>();
 builder.Services.AddScoped<IProductDal, EfProductDal>();
 
@@ -33,32 +44,37 @@ builder.Services.AddScoped<ISaleDal, EfSaleDal>();
 builder.Services.AddScoped<ISaleItemService, SaleItemManager>();
 builder.Services.AddScoped<ISaleItemDal, EfSaleItemDal>();
 
-builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddScoped<IDailyClosurService, DailyClosurManager>();
+builder.Services.AddScoped<IDailyClosurDal, EfDailyClosurDal>();
 
-//builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+builder.Services.AddScoped<ISepetService, SepetManager>();
+builder.Services.AddScoped<ISepetDal, EfSepetDal>();
+
+// AutoMapper registration
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Error handling
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
+// Middleware pipeline
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+
 app.UseRouting();
 
-app.UseAuthorization();
-app.UseAuthentication();
 
-app.MapStaticAssets();
+app.UseAuthentication(); 
+app.UseAuthorization(); 
 
+// Routing
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Login}/{action=LoginIndex}/{id?}")
-    .WithStaticAssets();
-
+    pattern: "{controller=Login}/{action=LoginIndex}/{id?}");
 
 app.Run();

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using IGAMarket.DtoLayer.DailyClosurDtos;
 using IGAMarket.DtoLayer.FireDtos;
 using IGAMarket.DtoLayer.ProductDtos;
 using IGAMarket.DtoLayer.UserDtos;
@@ -15,6 +16,11 @@ namespace IGAMarket.WebUI.Mapping
             CreateMap<Product, ResultProductDto>().ReverseMap();
             CreateMap<Fire, AddFireDto>().ReverseMap();
             CreateMap<User, CreateUserDto>();
+
+            CreateMap<DailyClosur, CreateDailyDto>().ReverseMap();
+
+
+            
 
         }
     }

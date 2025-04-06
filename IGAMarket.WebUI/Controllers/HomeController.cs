@@ -1,28 +1,39 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using IGAMarket.WebUI.Models;
+using Microsoft.AspNetCore.Authorization;
 
-namespace IGAMarket.WebUI.Controllers;
-
-public class HomeController : Controller
+namespace IGAMarket.WebUI.Controllers
 {
-    public IActionResult Index()
+    [Authorize(Roles = "Admin,Member")]
+    public class HomeController : Controller
     {
-        return View();
-    }
-    public IActionResult IslemlerIndex()
-    {
-        return View();
-    }  
-    public IActionResult ClosingIndex()
-    {
-        return View();
-    }
-    public IActionResult SatisIndex()
-    {
-        return View();
-    }
+        [Authorize]
+        public IActionResult IslemlerIndex()
+        {
+            return View();
+        }
+        [Authorize]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public IActionResult ClosingIndex()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public IActionResult SatisIndex()
+        {
+            return View();
+        }
 
 
 
+    }
 }
+
+

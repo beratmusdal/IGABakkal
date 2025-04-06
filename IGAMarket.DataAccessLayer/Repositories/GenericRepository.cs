@@ -41,6 +41,20 @@ namespace IGAMarket.DataAccessLayer.Repositories
             }
         }
 
+        public void Remove(T entity)
+        {
+            _dbSet.Remove(entity);
+            _context.SaveChanges();
+        }
+
+        public void RemoveAll()
+        {
+            var allEntities = _dbSet.ToList();
+            _dbSet.RemoveRange(allEntities);
+            _context.SaveChanges();
+        }
+
+
         public void Update(T entity)
         {
             _dbSet.Update(entity);  

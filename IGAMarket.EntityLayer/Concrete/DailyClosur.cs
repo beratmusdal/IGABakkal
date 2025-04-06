@@ -3,8 +3,10 @@
     public class DailyClosur : BaseEntity
     {
         public long Id { get; set; }
-        public decimal TotalSalePrice { get; set; }
-        public decimal TotalDonationPrice { get; set; }
-        public decimal TotalPrice => TotalSalePrice - TotalDonationPrice;
+        public string PersonelName { get; set; }
+        public decimal TotalAmount { get; set; }
+        public decimal TotalRefund { get; set; }
+        public int TotalFireQuantity { get; set; }
+        public string Description { get; set; }
     }
 }

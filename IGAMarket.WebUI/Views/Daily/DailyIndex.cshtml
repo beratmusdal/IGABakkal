@@ -1,0 +1,127 @@
+﻿@model IGAMarket.WebUI.Models.ProductModelView
+@using IGAMarket.DtoLayer.DailyClosurDtos;
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gün Sonu Kapanışı - Süpermarket POS Sistemi</title>
+    <link rel="stylesheet" href="~/ui/style.css" asp-append-version="true" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12 mx-auto">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0">Gün Sonu Kapanışı</h3>
+                        <a asp-controller="Home" asp-action="ClosingIndex" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left"></i> Geri Dön
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form id="dailyClosingForm" asp-action="CreateDaily" asp-controller="Daily" method="post">
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label">Kapanış Yapan</label>
+                                    <input type="text" class="form-control" asp-for="@(new CreateDailyDto().PersonelName)" placeholder="Ad Soyad" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Toplam Tutar</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" asp-for="@(new CreateDailyDto().TotalAmount)" step="0.01" required>
+                                        <span class="input-group-text">TL</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Toplam İade</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" asp-for="@(new CreateDailyDto().TotalRefund)" step="0.01" required>
+                                        <span class="input-group-text">TL</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Hibe Miktarı</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" asp-for="@(new CreateDailyDto().TotalFireQuantity)" step="0.01" required>
+                                        <span class="input-group-text">Ad.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container py-4">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h2>Ürün Listesi</h2>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Tarih</th>
+                                                    <th>Ürün Adı</th>
+                                                    <th>Barkod</th>
+                                                    <th>Stok</th>
+                                                    <th>Mevcut Stok Durumu Güncelle</th>
+                                                    <th>Onayla</th> <!-- Yeni sütun eklendi -->
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.ResultProductDto)
+                                                {
+                                                    <tr>
+                                                        <td>@item.CreateDate</td>
+                                                        <td>@item.Name</td>
+                                                        <td>@item.Barcode</td>
+                                                        <td>@item.StockQuantity</td>
+                                                        <td>
+                                                            <input type="number" class="form-control stock-update-input"
+                                                                   data-product-id="@item.Id" value="@item.StockQuantity">
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <input type="checkbox" class="stock-confirm-checkbox" data-input-id="@item.Id">
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label">Açıklama (Maksimum 100 Karakter)</label>
+                                    <textarea class="form-control" asp-for="@(new CreateDailyDto().Description)" rows="3" maxlength="100" placeholder="Açıklama girin"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-save"></i> Gün Sonu Kapanışını Kaydet
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/js/ProductScript.js" asp-append-version="true"></script>
+<script src="~/js/DailyClosingScript.js" asp-append-version="true"></script>

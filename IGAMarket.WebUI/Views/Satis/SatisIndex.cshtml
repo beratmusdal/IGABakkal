@@ -12,24 +12,43 @@
         <div class="col-md-8">
             <div class="product-section">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2>Ürünler</h2>
-                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary">
-                        <i class="fas fa-arrow-left"></i> Ana Sayfa
-                    </a>
+                    <h2>Ürünler</h2>                    
                 </div>
                 <div class="barcode-input">
                     <input type="text" id="barcodeInput" class="form-control" onkeydown="handleEnterKey()" placeholder="Barkod Okutunuz...">
                 </div>
-                <div class="category-buttons mb-3">
-                    <a class="btn btn-outline-primary me-2 @(Model.EnumType == 0 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="0">Tümü</a>
-                    <a class="btn btn-outline-primary me-2 @(Model.EnumType == 1 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="1">Genel</a>
-                    <a class="btn btn-outline-primary me-2 @(Model.EnumType == 2 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="2">Unlu Mamüller</a>
-                    <a class="btn btn-outline-primary me-2 @(Model.EnumType == 3 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="3">Tostlar</a>
-                    <a class="btn btn-outline-primary me-2 @(Model.EnumType == 4 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="4">Pizzalar</a>
-                    <a class="btn btn-outline-primary me-2 @(Model.EnumType == 5 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="5">Kahvaltı</a>
-                    <a class="btn btn-outline-primary me-2 @(Model.EnumType == 6 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="6">Diger</a>
-
+                <div class="container">
+                    <div class="row row-cols-auto g-2">
+                        <div class="col">
+                            <a class="btn btn-outline-primary @(Model.EnumType == 0 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="0">Genel</a>
+                        </div>
+                        <div class="col">
+                            <a class="btn btn-outline-primary @(Model.EnumType == 2 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="2">İçecekler</a>
+                        </div>
+                        <div class="col">
+                            <a class="btn btn-outline-primary @(Model.EnumType == 3 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="3">Kahvaltılıklar</a>
+                        </div>
+                        <div class="col">
+                            <a class="btn btn-outline-primary @(Model.EnumType == 4 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="4">Unlu Mamüller</a>
+                        </div>
+                        <div class="col">
+                            <a class="btn btn-outline-primary @(Model.EnumType == 5 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="5">Sandviçler</a>
+                        </div>
+                        <div class="col">
+                            <a class="btn btn-outline-primary @(Model.EnumType == 6 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="6">Fast Food ve Pideler</a>
+                        </div>
+                        <div class="col">
+                            <a class="btn btn-outline-primary @(Model.EnumType == 7 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="7">Tatlılar ve Pastalar</a>
+                        </div>
+                        <div class="col">
+                            <a class="btn btn-outline-primary @(Model.EnumType == 8 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="8">Hazır Ürünler ve Atıştırmalıklar</a>
+                        </div>
+                        <div class="col">
+                            <a class="btn btn-outline-primary @(Model.EnumType == 9 ? "active" : "")" asp-action="SatisIndex" asp-route-enumType="9">Diğer</a>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="product-grid" id="productGrid">
                     @foreach (var item in Model.ResultProductDto)
                     {
@@ -45,7 +64,7 @@
                                 </div>
                                 <div class="product-info">
                                     <h3>@item.Name</h3>
-                                    <span class="price">@item.SalePrice.ToString("C")</span>
+                                    <span class="price">@item.SalePrice ₺</span>
                                 </div>
                             </div>
 
@@ -76,13 +95,12 @@
                     <button id="clearCartBtn" class="btn btn-outline-danger mb-2 w-100" onclick="clearCart()">
                         <i class="fas fa-trash-alt me-2"></i>Temizle
                     </button>
-                    <button id="completePayment" class="btn btn-success w-100">
+                    <button class="btn btn-success w-100" onclick="completepay()">
                         <i class="fas fa-credit-card"></i> Ödemeyi Tamamla
                     </button>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -111,7 +129,7 @@
 
     .product-image img {
         max-width: 100%;
-        max-height: 200px;
+        max-height: 150px;
         object-fit: contain;
         margin: 10px auto;
         display: block;
@@ -120,7 +138,7 @@
     .product-info {
         text-align: center;
         margin-bottom: 10px;
-    }
+    }   
 
     .add-to-cart-button {
         margin-top: auto; 

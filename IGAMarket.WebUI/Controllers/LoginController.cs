@@ -1,10 +1,12 @@
 ﻿using IGAMarket.DtoLayer.UserDtos;
 using IGAMarket.EntityLayer.Concrete;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IGAMarket.WebUI.Controllers
 {
+    [AllowAnonymous]
     public class LoginController : Controller
     {
         private readonly SignInManager<User> _signInManager;
@@ -22,6 +24,7 @@ namespace IGAMarket.WebUI.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginUserDto loginUserDto)
         {
             if (ModelState.IsValid)
@@ -30,8 +33,22 @@ namespace IGAMarket.WebUI.Controllers
 
                 if (result.Succeeded)
                 {
-                    // Yönlendirme
-                    return RedirectToAction("Index", "Home");
+
+                    var user = await _userManager.FindByNameAsync(loginUserDto.UserName);
+                    var roles = await _userManager.GetRolesAsync(user);
+
+                    if (roles.Contains("Admin"))
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else if (roles.Contains("Member"))
+                    {
+                        return RedirectToAction("SatisIndex", "Satis");
+                    }
+                    else
+                    {
+                        return RedirectToAction("LoginIndex", "Login");
+                    }
                 }
                 else
                 {
@@ -43,8 +60,10 @@ namespace IGAMarket.WebUI.Controllers
                 ModelState.AddModelError(string.Empty, "Giriş verileri geçersiz.");
             }
 
-            return View(loginUserDto);
+            return View("LoginIndex", loginUserDto);
+
         }
+
 
 
 

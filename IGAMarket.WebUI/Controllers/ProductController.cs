@@ -34,9 +34,24 @@ namespace IGAMarket.WebUI.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateProductIndex(AddProductDto AddProductDto)
+        public IActionResult CreateProductIndex(AddProductDto addProductDto)
         {
-            _productService.TInsert(_mapper.Map<Product>(AddProductDto));
+            if (addProductDto.ImageFile != null)
+            {
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(addProductDto.ImageFile.FileName);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    addProductDto.ImageFile.CopyTo(stream);
+                }
+
+                addProductDto.ImageUrl = "/images/" + fileName;
+            }
+
+            _productService.TInsert(_mapper.Map<Product>(addProductDto));
+
+            // Ürün listesini güncelleme ve view için model oluşturma
             var productList = _productService.TGetList();
             var productDtoList = _mapper.Map<List<ResultProductDto>>(productList);
 
@@ -45,8 +60,12 @@ namespace IGAMarket.WebUI.Controllers
                 ResultProductDto = productDtoList
             };
 
+            // Modeli View'a gönderme
             return View(model);
         }
+
+
+
 
         [HttpPost]
         public JsonResult DeleteProduct(int id)

@@ -31,8 +31,9 @@ namespace IGAMarket.WebUI.Controllers
         [HttpPost]
         public IActionResult CreateFireIndex(AddFireDto AddFireDto)
         {
+
             _fireService.TInsert(_mapper.Map<Fire>(AddFireDto));
-            
+            AddFireDto.TotalPrice = AddFireDto.Quantity * AddFireDto.PurchasePrice;
             var model = new FireModelView
             {
                 ListFireDto = _fireService.GetDetailList()

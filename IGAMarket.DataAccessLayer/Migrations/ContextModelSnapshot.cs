@@ -33,13 +33,24 @@ namespace IGAMarket.DataAccessLayer.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<decimal>("TotalDonationPrice")
+                    b.Property<string>("PersonelName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("TotalSalePrice")
+                    b.Property<int>("TotalFireQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalRefund")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -74,6 +85,9 @@ namespace IGAMarket.DataAccessLayer.Migrations
                     b.Property<string>("Reason")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -136,6 +150,9 @@ namespace IGAMarket.DataAccessLayer.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -175,6 +192,26 @@ namespace IGAMarket.DataAccessLayer.Migrations
                     b.HasIndex("SaleId");
 
                     b.ToTable("SaleItems");
+                });
+
+            modelBuilder.Entity("IGAMarket.EntityLayer.Concrete.Sepet", b =>
+                {
+                    b.Property<string>("Barcode")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Barcode");
+
+                    b.ToTable("Sepetler");
                 });
 
             modelBuilder.Entity("IGAMarket.EntityLayer.Concrete.User", b =>

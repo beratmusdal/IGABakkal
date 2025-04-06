@@ -101,7 +101,7 @@ a {
 .product-card img {
     width: 100%;
     height: 150px;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 5px;
     margin-bottom: 10px;
 }
@@ -289,7 +289,7 @@ a {
 }
 
 /* Footer Stilleri */
-.footer {
+/*.footer {
     background-color: white;
     border-top: 1px solid #eee;
 }
@@ -303,7 +303,7 @@ a {
 
 .footer-logo:hover {
     opacity: 1;
-}
+}*/
 
 /* Ürün Girişi Sayfası Stilleri */
 .product-entry-card {
@@ -330,7 +330,12 @@ a {
     position: relative;
 }
 
-.image-preview {
+.product-info .price {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: red; 
+
+    .image-preview {
     width: 100%;
     min-height: 200px;
     border: 2px dashed #ddd;

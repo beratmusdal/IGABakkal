@@ -11,5 +11,7 @@ namespace IGAMarket.DtoLayer.FireDtos
         public string Barcode { get; set; }
         public int Quantity { get; set; } 
         public string Reason { get; set; }
+        public decimal PurchasePrice { get; set; }
+        public decimal TotalPrice { get; set; }
     }
 }

@@ -23,4 +23,10 @@
     <ProjectReference Include="..\IGAMarket.DtoLayer\IGAMarket.DtoLayer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="IgaPass.IngenicoEcr">
+      <HintPath>..\..\..\..\Desktop\IGAPASS 2024\IGAPASS 2024\igapass-dist\IgaPass.IngenicoEcr.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

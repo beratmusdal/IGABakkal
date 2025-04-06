@@ -1,4 +1,5 @@
-﻿@model IGAMarket.WebUI.Models.ProductModelView
+﻿@using IGAMarket.EntityLayer.Enums
+@model IGAMarket.WebUI.Models.ProductModelView
 
 @{
     ViewData["Title"] = "Ürün Page";
@@ -18,7 +19,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <form id="productEntryForm" class="needs-validation" asp-action="CreateProductIndex" method="post" novalidate>
+                        <form id="productEntryForm" class="needs-validation" asp-action="CreateProductIndex" method="post" enctype="multipart/form-data" novalidate>
                         <div class="row g-4">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -82,15 +83,23 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="category" class="form-label">Ürün Kategori</label>
+                                        @using System.ComponentModel.DataAnnotations
+                                        @using System.Reflection
+
                                         <select class="form-control" name="Category" id="category" required>
                                             <option value="" disabled selected>Kategori Seçiniz</option>
-                                            <option value="0">Genel</option>
-                                            <option value="1">İçecek</option>
-                                            <option value="2">Unlu Mamüller</option>
-                                            <option value="3">Pizza</option>
-                                            <option value="4">Kahvaltı</option>
-                                            <option value="5">Diğer</option>
+                                            @foreach (var category in Enum.GetValues(typeof(CategoryEnum)).Cast<CategoryEnum>())
+                                            {
+                                                var displayName = category.GetType()
+                                                .GetMember(category.ToString())
+                                                .First()
+                                                .GetCustomAttribute<DisplayAttribute>()?
+                                                .Name ?? category.ToString();
+                                                <option value="@((int)category)">@displayName</option>
+                                            }
                                         </select>
+
+
                                         <div class="invalid-feedback">
                                             Lütfen bir kategori seçiniz.
                                         </div>
@@ -101,9 +110,9 @@
                                 <div class="form-group">
                                     <label for="productImage" class="form-label">Ürün Görseli</label>
                                     <div class="product-image-upload">
-                                        <input type="file" class="form-control" name="ImageUrl" id="productImage" accept="image/*">
-                                        <div class="image-preview mt-2" id="imagePreview">
-                                            <img src="https://via.placeholder.com/200x200" alt="Ürün görseli önizleme" class="img-thumbnail d-none">
+                                            <input type="file" class="form-control" name="ImageFile" id="productImage" accept="image/*">
+
+                                        <div class="image-preview mt-2" id="imagePreview">                                           
                                             <div class="upload-placeholder">
                                                 <i class="fas fa-cloud-upload-alt"></i>
                                                 <p>Görsel yüklemek için tıklayın veya sürükleyin</p>
@@ -124,7 +133,7 @@
 
             <div class="card donation-table-card">
                 <div class="card-header bg-white py-3">
-                    <h3 class="card-title mb-0">Hibe Giriş Listesi</h3>
+                    <h3 class="card-title mb-0">Ürün Listesi</h3>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
