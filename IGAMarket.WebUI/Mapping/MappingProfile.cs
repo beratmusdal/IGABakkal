@@ -14,14 +14,10 @@ namespace IGAMarket.WebUI.Mapping
         {
             CreateMap<Product, AddProductDto>().ReverseMap();
             CreateMap<Product, ResultProductDto>().ReverseMap();
+            CreateMap<Product, UpdatePorductDto>().ReverseMap();
             CreateMap<Fire, AddFireDto>().ReverseMap();
             CreateMap<User, CreateUserDto>();
-
             CreateMap<DailyClosur, CreateDailyDto>().ReverseMap();
-
-
-            
-
         }
     }
 }

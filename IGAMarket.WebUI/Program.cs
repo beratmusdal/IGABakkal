@@ -55,6 +55,7 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 
+
 // Error handling
 if (!app.Environment.IsDevelopment())
 {

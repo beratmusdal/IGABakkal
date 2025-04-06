@@ -6,87 +6,88 @@
     int count = 0;
 }
 <body class="d-flex flex-column min-vh-100">
-<div class="container flex-grow-1 py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-12">
-            <div class="card product-entry-card">
-                <div class="card-header bg-white py-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h2 class="card-title mb-0">Yeni Ürün Girişi</h2>
-                        <a asp-controller="Home" asp-action="IslemlerIndex" class="btn btn-outline-primary">
-                            <i class="fas fa-arrow-left"></i> Geri Dön
-                        </a>
+    <div class="container flex-grow-1 py-4">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card product-entry-card">
+                    <div class="card-header bg-white py-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h2 class="card-title mb-0">Yeni Ürün Girişi</h2>
+                            <a asp-controller="Home" asp-action="IslemlerIndex" class="btn btn-outline-primary">
+                                <i class="fas fa-arrow-left"></i> Geri Dön
+                            </a>
+                        </div>
                     </div>
-                </div>
-                <div class="card-body">
+                    <div class="card-body">
                         <form id="productEntryForm" class="needs-validation" asp-action="CreateProductIndex" method="post" enctype="multipart/form-data" novalidate>
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="productName" class="form-label">Ürün Adı</label>
-                                    <input type="text" class="form-control" name="Name" id="productName" required>
-                                    <div class="invalid-feedback">
-                                        Lütfen ürün adını giriniz.
+                            <div class="row g-4">
+                                <input type="hidden" asp-for="UpdateProductDto.Id" name="Id"/>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="productName" class="form-label">Ürün Adı</label>
+                                        <input type="text" class="form-control" asp-for="UpdateProductDto.Name" name="Name" id="productName" required>
+                                        <div class="invalid-feedback">
+                                            Lütfen ürün adını giriniz.
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="barcode" class="form-label">Ürün Barkodu</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" name="Barcode" id="barcode" required>
-                                        <button class="btn btn-outline-secondary" type="button" id="scanBarcode">
-                                            <i class="fas fa-barcode"></i>
-                                        </button>
-                                    </div>
-                                    <div class="invalid-feedback">
-                                        Lütfen barkod numarasını giriniz.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="purchasePrice" class="form-label">Alış Fiyatı</label>
-                                    <div class="input-group">
-                                        <input type="number" class="form-control" name="PurchasePrice" id="purchasePrice" step="0.01" required>
-                                        <span class="input-group-text">₺</span>
-                                    </div>
-                                    <div class="invalid-feedback">
-                                        Lütfen alış fiyatını giriniz.
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="barcode" class="form-label">Ürün Barkodu</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" asp-for="UpdateProductDto.Barcode" name="Barcode" id="barcode" required>
+                                            <button class="btn btn-outline-secondary" type="button" id="scanBarcode">
+                                                <i class="fas fa-barcode"></i>
+                                            </button>
+                                        </div>
+                                        <div class="invalid-feedback">
+                                            Lütfen barkod numarasını giriniz.
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="salePrice" class="form-label">Satış Fiyatı</label>
-                                    <div class="input-group">
-                                        <input type="number" class="form-control" name="SalePrice" id="salePrice" step="0.01" required>
-                                        <span class="input-group-text">₺</span>
-                                    </div>
-                                    <div class="invalid-feedback">
-                                        Lütfen satış fiyatını giriniz.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="salePrice" class="form-label">Stok Adeti</label>
-                                    <div class="input-group">
-                                        <input type="number" class="form-control" name="StockQuantity" id="stockQuantity" step="0.01" required>
-                                        <span class="input-group-text">₺</span>
-                                    </div>
-                                    <div class="invalid-feedback">
-                                        Lütfen stok adetini giriniz.
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="purchasePrice" class="form-label">Alış Fiyatı</label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" asp-for="UpdateProductDto.PurchasePrice" name="PurchasePrice" id="purchasePrice" step="0.01" required>
+                                            <span class="input-group-text">₺</span>
+                                        </div>
+                                        <div class="invalid-feedback">
+                                            Lütfen alış fiyatını giriniz.
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="salePrice" class="form-label">Satış Fiyatı</label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" asp-for="UpdateProductDto.SalePrice" name="SalePrice" id="salePrice" step="0.01" required>
+                                            <span class="input-group-text">₺</span>
+                                        </div>
+                                        <div class="invalid-feedback">
+                                            Lütfen satış fiyatını giriniz.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="stockQuantity" class="form-label">Stok Adeti</label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" asp-for="UpdateProductDto.StockQuantity" name="StockQuantity" id="stockQuantity" step="1" required>
+                                            <span class="input-group-text">₺</span>
+                                        </div>
+                                        <div class="invalid-feedback">
+                                            Lütfen stok adetini giriniz.
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="category" class="form-label">Ürün Kategori</label>
                                         @using System.ComponentModel.DataAnnotations
                                         @using System.Reflection
 
-                                        <select class="form-control" name="Category" id="category" required>
+                                        <select class="form-control" asp-for="UpdateProductDto.Category" name="Category" id="category" required>
                                             <option value="" disabled selected>Kategori Seçiniz</option>
                                             @foreach (var category in Enum.GetValues(typeof(CategoryEnum)).Cast<CategoryEnum>())
                                             {
@@ -106,78 +107,73 @@
                                     </div>
                                 </div>
 
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label for="productImage" class="form-label">Ürün Görseli</label>
-                                    <div class="product-image-upload">
-                                            <input type="file" class="form-control" name="ImageFile" id="productImage" accept="image/*">
-
-                                        <div class="image-preview mt-2" id="imagePreview">                                           
-                                            <div class="upload-placeholder">
-                                                <i class="fas fa-cloud-upload-alt"></i>
-                                                <p>Görsel yüklemek için tıklayın veya sürükleyin</p>
-                                            </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="productImage" class="form-label">Ürün Görseli</label>
+                                        <div class="product-image-upload">
+                                            <input type="file" asp-for="UpdateProductDto.ImageUrl" class="form-control" name="ImageFile" id="productImage" accept="image/*">
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="text-center mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg save-product-btn">
-                                <i class="fas fa-save me-2"></i>Ürünü Kaydet
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg save-product-btn">
+                                    <i class="fas fa-save me-2"></i>Ürünü Kaydet
+                                </button>
+                            </div>
+                        </form>
+                    </div>
 
-            <div class="card donation-table-card">
-                <div class="card-header bg-white py-3">
-                    <h3 class="card-title mb-0">Ürün Listesi</h3>
                 </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="donationTable" class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Tarih</th>
-                                    <th>Ürün Adı</th>
-                                    <th>Barkod</th>
-                                    <th>Alış Fiyatı</th>
-                                    <th>Satış Fiyatı</th>
-                                    <th>Stok</th>
-                                    <th>İşlem</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.ResultProductDto)
-                                {
-                                    count++;
-                                    <tr id="product-row-@item.Id">
 
-                                        <td>@count</td>
-                                        <td>@item.CreateDate</td>
-                                        <td>@item.Name</td>
-                                        <td>@item.Barcode</td>
-                                        <td>@item.PurchasePrice ₺</td>
-                                        <td>@item.SalePrice ₺</td>
-                                        <td>@item.StockQuantity</td>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-outline-danger delete-donation" onclick="deleteProduct(@item.Id)">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr> 
-                                }
-                            </tbody>
-                        </table>
+                <div class="card product-entry-card mt-3">
+                    <div class="card-header bg-white py-3">
+                        <h3 class="card-title mb-0">Ürün Listesi</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="donationTable" class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Tarih</th>
+                                        <th>Ürün Adı</th>
+                                        <th>Barkod</th>
+                                        <th>Alış Fiyatı</th>
+                                        <th>Satış Fiyatı</th>
+                                        <th>Stok</th>
+                                        <th>İşlem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.ResultProductDto)
+                                    {
+                                        count++;
+                                        <tr id="product-row-@item.Id">
+                                            <td>@count</td>
+                                            <td>@item.CreateDate</td>
+                                            <td>@item.Name</td>
+                                            <td>@item.Barcode</td>
+                                            <td>@item.PurchasePrice ₺</td>
+                                            <td>@item.SalePrice ₺</td>
+                                            <td>@item.StockQuantity</td>
+                                            <td>
+                                                <a type="button" class="btn btn-sm btn-outline-success update-product"
+                                                   asp-action="UpdateProductIndex" asp-route-id="@item.Id">
+                                                    <i class="fas fa-edit"></i> Güncelle
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/js/ProductScript.js" asp-append-version="true"></script>

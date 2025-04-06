@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "SatisIndex";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    
 }
 <script src="~/js/SatisScript.js" asp-append-version="true"></script>
 <!-- Header -->
@@ -12,7 +13,10 @@
         <div class="col-md-8">
             <div class="product-section">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2>Ürünler</h2>                    
+                    <h2>Ürünler</h2>
+                    <a class="btn btn-outline-primary" asp-controller="Home" asp-action="Index">
+                        <i class="fas fa-home"></i> Anasayfa
+                    </a>
                 </div>
                 <div class="barcode-input">
                     <input type="text" id="barcodeInput" class="form-control" onkeydown="handleEnterKey()" placeholder="Barkod Okutunuz...">
@@ -143,4 +147,38 @@
     .add-to-cart-button {
         margin-top: auto; 
     }
+
+    .cart-section {
+        position: relative;
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+        .cart-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('/images/logo.png');
+            background-size: 30%;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.1;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .cart-section > * {
+            position: relative;
+            z-index: 1;
+        }
 </style>
+
+
+
+
+

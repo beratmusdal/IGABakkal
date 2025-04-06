@@ -395,8 +395,11 @@ a {
 
 /* Hibe Giriş Sayfası Stilleri */
 .donation-entry-card, .donation-table-card {
+    background-color: white;
     border: none;
-    box-shadow: 0 0 20px rgba(0,0,0,0.08);
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-top: 2rem;
 }
 
 .donation-entry-card .card-header,
@@ -497,12 +500,12 @@ a {
     .donation-table-card .card-header {
         padding: 15px;
     }
-    
+
     .donation-entry-card .card-body,
     .donation-table-card .card-body {
         padding: 15px;
     }
-    
+
     .save-donation-btn {
         width: 100%;
     }
@@ -512,4 +515,4 @@ a {
         text-align: left;
         margin-bottom: 10px;
     }
-} 
+}
