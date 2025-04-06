@@ -61,9 +61,5 @@ namespace IGAMarket.WebUI.Controllers
                 return Json(new { success = false, message = "Silme işlemi başarısız! " + ex.Message });
             }
         }
-
-        
-
-
     }
 }

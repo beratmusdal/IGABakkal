@@ -99,7 +99,6 @@ public class SatisController : Controller
             {
                 return BadRequest($"Ürün bulunamadı! (Barkod: {item.Barcode})");
             }
-
             // Stok yeterli mi kontrol et
             if (product.StockQuantity < item.Quantity)
             {
