@@ -54,14 +54,24 @@
                         <div class="row mb-4">
                             <div class="col-md-6">
                                 <div class="form-group">
+                                    <label class="form-label">Z No</label>
+                                    <input type="text" class="form-control" name="ZNo" placeholder="Z No giriniz" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
                                     <label class="form-label">Hibe Miktarı</label>
                                     <div class="input-group">
-                                        <input type="number" class="form-control" asp-for="@(new CreateDailyDto().TotalFireQuantity)" step="0.01" required>
+                                        <input type="number" class="form-control"
+                                               name="TotalFireQuantity"
+                                               value="@Model.TodayFireCount"
+                                               step="0.01" required>
                                         <span class="input-group-text">Ad.</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <div class="container py-4">
                             <div class="row">
                                 <div class="col-md-12">

@@ -49,7 +49,7 @@
                                     <div class="form-group">
                                         <label for="purchasePrice" class="form-label">Alış Fiyatı</label>
                                         <div class="input-group">
-                                            <input type="number" class="form-control" asp-for="UpdateProductDto.PurchasePrice" name="PurchasePrice" id="purchasePrice" step="0.01" required>
+                                            <input type="text" class="form-control" asp-for="UpdateProductDto.PurchasePrice" name="PurchasePrice" id="purchasePrice" step="0.01" required>
                                             <span class="input-group-text">₺</span>
                                         </div>
                                         <div class="invalid-feedback">
@@ -61,7 +61,7 @@
                                     <div class="form-group">
                                         <label for="salePrice" class="form-label">Satış Fiyatı</label>
                                         <div class="input-group">
-                                            <input type="number" class="form-control" asp-for="UpdateProductDto.SalePrice" name="SalePrice" id="salePrice" step="0.01" required>
+                                            <input type="text" class="form-control" asp-for="UpdateProductDto.SalePrice" name="SalePrice" id="salePrice"  step="0.01" required>
                                             <span class="input-group-text">₺</span>
                                         </div>
                                         <div class="invalid-feedback">
@@ -111,7 +111,7 @@
                                     <div class="form-group">
                                         <label for="productImage" class="form-label">Ürün Görseli</label>
                                         <div class="product-image-upload">
-                                            <input type="file" asp-for="UpdateProductDto.ImageUrl" class="form-control" name="ImageFile" id="productImage" accept="image/*">
+                                            <input type="file" class="form-control" name="ImageFile" id="productImage" accept="image/*">
                                         </div>
                                     </div>
                                 </div>

@@ -31,13 +31,11 @@ namespace IGAMarket.WebUI.Controllers
             };
 
             return View(model);
-
         }
 
         [HttpPost]
-        public IActionResult CreateProductIndex(UpdatePorductDto addProductDto)
-        {          
-            // Eğer ImageFile null ise, varsayılan görseli kullan
+        public IActionResult CreateProductIndex(UpdateProductDto addProductDto)
+        {
             if (addProductDto.ImageFile != null)
             {
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(addProductDto.ImageFile.FileName);
@@ -52,20 +50,14 @@ namespace IGAMarket.WebUI.Controllers
             }
             else
             {
-                // Eğer resim yoksa, varsayılan görseli kullan
                 addProductDto.ImageUrl = "/images/b0ec052d-1ddc-4ef0-b19c-9c6deeedd6b8.png";
             }
 
-            // Ürünü ekleme
-            if (addProductDto.Id == 0)
-            {
-                _productService.TInsert(_mapper.Map<Product>(addProductDto));
-            }
-            else
-            {
-                _productService.TUpdate(_mapper.Map<Product>(addProductDto));
-            }
-            // Ürün listesini güncelleme ve view için model oluşturma
+            addProductDto.PurchasePrice = addProductDto.PurchasePrice.Replace(".", ",").Trim();
+            addProductDto.SalePrice = addProductDto.SalePrice.Replace(".", ",").Trim();
+
+            _productService.AddProduct(_mapper.Map<Product>(addProductDto));
+
             var productList = _productService.TGetList();
             var productDtoList = _mapper.Map<List<ResultProductDto>>(productList);
 
@@ -74,17 +66,15 @@ namespace IGAMarket.WebUI.Controllers
                 ResultProductDto = productDtoList
             };
 
-            // Modeli View'a gönderme
             return View(model);
         }
-
 
         [HttpPost]
         public JsonResult DeleteProduct(int id)
         {
             try
             {
-                _productService.UpdateById(id); // Silme işlemi
+                _productService.UpdateById(id);
                 return Json(new { success = true });
             }
             catch (Exception ex)
@@ -94,18 +84,19 @@ namespace IGAMarket.WebUI.Controllers
         }
 
         [HttpGet]
-        public IActionResult UpdateProductIndex(int id)
+        public IActionResult UpdateProductIndex(long id)
         {
-
             var product = _productService.Get(x => x.Id == id);
-            var productDto = _mapper.Map<UpdatePorductDto>(product);
+            var productDto = _mapper.Map<UpdateProductDto>(product);
             var productList = _productService.TGetList();
             var productDtoList = _mapper.Map<List<ResultProductDto>>(productList);
+
             var model = new ProductModelView
             {
                 UpdateProductDto = productDto,
                 ResultProductDto = productDtoList
             };
+
             return View("CreateProductIndex", model);
         }
     }

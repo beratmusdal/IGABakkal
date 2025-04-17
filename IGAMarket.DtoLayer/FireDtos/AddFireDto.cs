@@ -8,6 +8,7 @@ namespace IGAMarket.DtoLayer.FireDtos
 {
     public class AddFireDto
     {
+        public string Name { get; set; }
         public string Barcode { get; set; }
         public int Quantity { get; set; } 
         public string Reason { get; set; }

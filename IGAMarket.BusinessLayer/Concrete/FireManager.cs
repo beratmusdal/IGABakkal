@@ -97,5 +97,31 @@ namespace IGAMarket.BusinessLayer.Concrete
 
             return _FireDal.Get(filter);
         }
+
+        public void FireInsert(AddFireDto model)
+        {
+            var product = _productDal.Get(x => x.Name == model.Name);
+            if (product == null)
+                throw new Exception("Ürün bulunamadı.");
+
+            Fire fire = new Fire
+            {
+                Barcode = product.Barcode,
+                PurchasePrice = product.PurchasePrice,
+                Quantity = model.Quantity,
+                Reason = model.Reason,
+                CreateDate = DateTime.Now,
+                IsDeleted = false,
+                TotalPrice = model.Quantity * product.PurchasePrice
+            };
+
+            _FireDal.Insert(fire);
+        }
+
+
+
+
+
     }
 }
+

@@ -58,5 +58,23 @@ namespace IGAMarket.BusinessLayer.Concrete
         {
             _ProductDal.UpdateProductStockQuantity(id, newStock);
         }
+
+        public void AddProduct(Product product)
+        {
+            var data = _ProductDal.Get(x => x.Barcode == product.Barcode && !x.IsDeleted);
+            if (data==null)
+            {
+                _ProductDal.Insert(product);
+                return;
+            }
+            data.PurchasePrice = product.PurchasePrice;
+            data.SalePrice = product.SalePrice;
+            data.StockQuantity = product.StockQuantity;
+            data.Category = product.Category;
+            data.Name = product.Name;
+            data.ImageUrl = product.ImageUrl;
+            data.CreateDate = product.CreateDate;
+            _ProductDal.Update(data);
+        }
     }
 }

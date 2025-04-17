@@ -9,6 +9,7 @@ namespace IGAMarket.DtoLayer.DailyClosurDtos
     public class CreateDailyDto
     {
         public string PersonelName { get; set; }
+        public string ZNo { get; set; }
         public decimal TotalAmount { get; set; }
         public decimal TotalRefund { get; set; }
         public int TotalFireQuantity { get; set; }

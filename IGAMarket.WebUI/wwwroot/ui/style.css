@@ -185,15 +185,7 @@ a {
     overflow: hidden;
 }
 
-.closing-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(90deg, #007bff, #00ff88);
-}
+
 
 .closing-info {
     margin-top: 20px;
@@ -221,6 +213,15 @@ a {
 }
 
 .operation-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #17a2b8, #ffc107);
+}
+.closing-card::after {
     content: '';
     position: absolute;
     top: 0;

@@ -1,6 +1,5 @@
-﻿getAllItem();
-
-
+﻿
+getAllItem();
 
 function handleEnterKey() {
     const barcodeInput = document.getElementById('barcodeInput');
@@ -11,24 +10,20 @@ function handleEnterKey() {
         barcodeInput.value = '';
     }
 }
-
 function clearCart() {
-    if (confirm('Sepetteki tüm ürünleri silmek istediğinizden emin misiniz?')) {
-        fetch('/Satis/removeAllItem', {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
+    fetch('/Satis/removeAllItem', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
         .then(response => response.json())
         .then(data => {
-
-            saleDesign(data)
+            saleDesign(data);
         })
         .catch(error => {
             console.error("Hata:", error);
         });
-    }
 }
 
 function addToCart(barcode) {
@@ -41,7 +36,6 @@ function addToCart(barcode) {
 
     addProductToCart(barcode)
 }
-
 function addProductToCart(barcode) {
     fetch('/Satis/increaseItem', {
         method: "POST",
@@ -50,17 +44,27 @@ function addProductToCart(barcode) {
         },
         body: JSON.stringify(barcode)
     })
-        .then(response => response.json())
-        .then(data => {
+        .then(async response => {
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                alert(errorMessage); 
+                return;
+            }
 
-            saleDesign(data)
+            return response.json();
+        })
+        .then(data => {
+            if (data) {
+                saleDesign(data);
+            }
         })
         .catch(error => {
             console.error("Hata:", error);
+            alert("Bir hata oluştu.");
+
+
         });
-
 }
-
 function removeFromCart(barcode) {
     fetch('/Satis/decreaseItem', {
         method: "POST",
@@ -78,7 +82,27 @@ function removeFromCart(barcode) {
             console.error("Hata:", error);
         });
 }
-
+function offerFree(barcode) {
+    fetch('/Satis/Gift', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(barcode)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {                
+                getAllItem();
+            } else {
+                alert("Bir hata oluştu: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Hata:', error);
+            alert('Bir hata oluştu.');
+        });
+}
 function removeItemCompletely(barcode) {
     fetch('/Satis/deleteItem', {
         method: "POST",
@@ -96,7 +120,6 @@ function removeItemCompletely(barcode) {
             console.error("Hata:", error);
         });
 }
-
 function getAllItem() {
     fetch('/Satis/getAllItem', {
         method: "GET",
@@ -112,8 +135,6 @@ function getAllItem() {
             console.error("Hata:", error);
         });
 }
-
-
 function saleDesign(data) {
     const cartItems = document.getElementById('cartItems');
     const cartTotal = document.getElementById('cartTotal');
@@ -130,7 +151,7 @@ function saleDesign(data) {
             <div class="cart-item-info">
                 <h5>${item.name}</h5>
                 <p>${item.price} TL x ${item.quantity}</p>
-                <p>Toplam: ${itemTotal} TL</p>
+                <p>Toplam: <span class="item-total">${itemTotal} TL</span></p>
             </div>
             <div class="cart-item-quantity">
                 <button onclick="removeFromCart('${item.barcode}')">-</button>
@@ -140,13 +161,18 @@ function saleDesign(data) {
             <button class="remove-item" onclick="removeItemCompletely('${item.barcode}')">
                 <i class="fas fa-times"></i>
             </button>
+
+            <!-- İkram Et Butonu -->
+            <button class="btn btn-warning mt-2" onclick="offerFree('${item.barcode}')">
+              <i class="fas fa-gift"></i>
+            </button>
         `;
+
         cartItems.appendChild(cartItem);
     });
 
     cartTotal.textContent = `${total} TL`;
 }
-
 function completepay() {
     let cartItems = [];
     let totalAmount = parseFloat(document.getElementById("cartTotal")?.innerText.replace("TL", "").trim()) || 0;
@@ -200,11 +226,6 @@ function completepay() {
         })
         .catch(error => {
             console.error("Hata:", error);
-        });
-
-
-  
-
-   
+        });   
 
 }

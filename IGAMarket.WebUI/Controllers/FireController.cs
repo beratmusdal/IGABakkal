@@ -11,11 +11,13 @@ namespace IGAMarket.WebUI.Controllers
     public class FireController : Controller
     {
         private readonly IFireService _fireService;
+        private readonly IProductService _productService;
         private readonly IMapper _mapper;
 
-        public FireController(IFireService fireService, IMapper mapper)
+        public FireController(IFireService fireService, IProductService productService, IMapper mapper)
         {
             _fireService = fireService;
+            _productService = productService;
             _mapper = mapper;
         }
 
@@ -24,47 +26,82 @@ namespace IGAMarket.WebUI.Controllers
         {
             var model = new FireModelView
             {
-                ListFireDto = _fireService.GetDetailList()
+                ListFireDto = _fireService.GetDetailList(),
+                ProductList = _productService.GetAll()
             };
             return View(model);
         }
+
         [HttpPost]
-        public IActionResult CreateFireIndex(AddFireDto AddFireDto)
+        public IActionResult CreateFireIndex(AddFireDto addFireDto)
         {
-
-            _fireService.TInsert(_mapper.Map<Fire>(AddFireDto));
-            AddFireDto.TotalPrice = AddFireDto.Quantity * AddFireDto.PurchasePrice;
-            var model = new FireModelView
+            try
             {
-                ListFireDto = _fireService.GetDetailList()
-            };
-            return View(model);
+                var fireEntity = _mapper.Map<Fire>(addFireDto);
+                _fireService.TInsert(fireEntity);
+
+                addFireDto.TotalPrice = addFireDto.Quantity * addFireDto.PurchasePrice;
+
+                var product = _productService.Get(x => x.Barcode == addFireDto.Barcode && !x.IsDeleted);
+                if (product == null)
+                    return BadRequest($"Ürün bulunamadı! (Barkod: {addFireDto.Barcode})");
+
+                if (product.StockQuantity < addFireDto.Quantity)
+                    return BadRequest($"Stok yetersiz! ({product.Name} - Stok: {product.StockQuantity}, İstenen: {addFireDto.Quantity})");
+
+                product.StockQuantity -= addFireDto.Quantity;
+                _productService.TUpdate(product);
+
+                var model = new FireModelView
+                {
+                    ListFireDto = _fireService.GetDetailList(),
+                    ProductList = _productService.GetAll()
+                };
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Bir hata oluştu: {ex.Message}");
+            }
         }
 
-        //public IActionResult DeleteFire(int id)
-        //{
-        //    _fireService.UpdateById(id);
-        //    var model = new FireModelView
-        //    {
-        //        ListFireDto = _fireService.GetDetailList()
-        //    };
-        //    return View(nameof(Index),model);
-        //}
         [HttpPost]
         public JsonResult DeleteFire(int id)
         {
             try
             {
-                _fireService.UpdateById(id); // Silme işlemi
-                return Json(new { success = true });
+                var fire = _fireService.Get(x => x.Id == id);
+
+                if (fire == null)
+                {
+                    return Json(new { success = false, message = "Böyle bir hibe kaydı bulunamadı!" });
+                }
+
+                if (fire.IsDeleted)
+                {
+                    return Json(new { success = false, message = "Bu hibe kaydı zaten silinmiş." });
+                }
+
+                fire.IsDeleted = true;
+                _fireService.TUpdate(fire);
+
+                var product = _productService.Get(x => x.Barcode == fire.Barcode && !x.IsDeleted);
+
+                if (product == null)
+                {
+                    return Json(new { success = false, message = "Ürün bulunamadı!" });
+                }
+
+                product.StockQuantity += fire.Quantity;
+                _productService.TUpdate(product);
+
+                return Json(new { success = true, message = "Hibe kaydı başarıyla silindi ve stok geri yüklendi." });
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, message = "Silme işlemi başarısız! " + ex.Message });
             }
         }
-
-        
-
     }
 }

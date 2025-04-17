@@ -1,8 +1,8 @@
 ﻿$('.stock-update-input').on('change', function () {
-    var productId = $(this).attr('data-product-id'); // .data yerine .attr kullan
+    var productId = $(this).attr('data-product-id');
     var newStock = $(this).val();
 
-    console.log("Product ID:", productId); // Hangi değer alındığını görmek için
+    console.log("Product ID:", productId);
     console.log("New Stock:", newStock);
 
     $.ajax({
@@ -11,11 +11,17 @@
         contentType: 'application/json',
         data: JSON.stringify({ Id: productId, newStock: parseInt(newStock) }),
         success: function (response) {
-            if (response.success) {
-                alert('Stok başarıyla güncellendi!');
-                location.reload();
+            console.log("Gelen response:", response);
+
+            if (response && response.success) {
+                // Alert yerine kullanıcıya görsel geri bildirim
+                var row = $("input[data-product-id='" + productId + "']").closest("tr");
+                row.css("background-color", "#d4edda"); // Yeşil arka plan
+                setTimeout(function () {
+                    row.css("background-color", ""); // Geri eski haline dön
+                }, 1500);
             } else {
-                alert('Stok güncelleme başarısız: ' + response.message);
+                alert('Stok güncelleme başarısız: ' + (response.message || "Sunucu hatası"));
             }
         },
         error: function (xhr, status, error) {
@@ -23,7 +29,6 @@
         }
     });
 });
-
 
 $(document).ready(function () {
     $(".stock-confirm-checkbox").on("change", function () {
@@ -37,4 +42,3 @@ $(document).ready(function () {
         }
     });
 });
-

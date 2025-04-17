@@ -9,18 +9,6 @@ $(document).ready(function () {
         pageLength: 5, // Sayfa başına gösterilecek kayıt sayısı
         lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]]
     });  
-
-    $('#purchasePrice').on('click', function () {       
-        if ($(this).val() !== '') {
-            $(this).val('');
-        }
-    });
-    
-    $('#salePrice').on('click', function () {        
-        if ($(this).val() !== '') {
-            $(this).val('');
-        }
-    });
 });
 
 

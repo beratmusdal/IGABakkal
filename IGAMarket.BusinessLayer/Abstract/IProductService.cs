@@ -10,6 +10,7 @@ namespace IGAMarket.BusinessLayer.Abstract
     public interface IProductService : IGenericService<Product>
     {
         void UpdateById(long id);
+        void AddProduct(Product product);
         void UpdateProductStockQuantity(long id, int newStock);
 
     }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace IGAMarket.WebUI.Controllers
 {
     [Authorize(Roles = "Admin,Member")]
+    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
     public class HomeController : Controller
     {
         [Authorize]
@@ -30,8 +31,6 @@ namespace IGAMarket.WebUI.Controllers
         {
             return View();
         }
-
-
 
     }
 }

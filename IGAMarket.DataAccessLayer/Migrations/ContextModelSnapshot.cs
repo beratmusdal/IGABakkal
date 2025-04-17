@@ -53,6 +53,10 @@ namespace IGAMarket.DataAccessLayer.Migrations
                     b.Property<decimal>("TotalRefund")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("ZNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("DailyClosures");
@@ -143,6 +147,10 @@ namespace IGAMarket.DataAccessLayer.Migrations
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("CashierName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");

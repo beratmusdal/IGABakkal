@@ -16,5 +16,7 @@ namespace IGAMarket.DataAccessLayer.EntityFramework
         public EfSaleDal(Context context) : base(context)
         {
         }
+
+
     }
 }

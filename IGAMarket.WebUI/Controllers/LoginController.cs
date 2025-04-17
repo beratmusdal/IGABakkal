@@ -22,7 +22,6 @@ namespace IGAMarket.WebUI.Controllers
         {
             return View();
         }
-
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginUserDto loginUserDto)
@@ -33,7 +32,6 @@ namespace IGAMarket.WebUI.Controllers
 
                 if (result.Succeeded)
                 {
-
                     var user = await _userManager.FindByNameAsync(loginUserDto.UserName);
                     var roles = await _userManager.GetRolesAsync(user);
 
@@ -59,16 +57,7 @@ namespace IGAMarket.WebUI.Controllers
             {
                 ModelState.AddModelError(string.Empty, "Giriş verileri geçersiz.");
             }
-
             return View("LoginIndex", loginUserDto);
-
         }
-
-
-
-
-
-
-
     }
 }

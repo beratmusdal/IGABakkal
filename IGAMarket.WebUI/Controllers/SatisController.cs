@@ -29,7 +29,6 @@ public class SatisController : Controller
     }
 
     [HttpGet]
-   
     public IActionResult SatisIndex(int enumType = 0)
     {
         var productList = _productService.GetAll(x => x.IsDeleted == false);
@@ -37,6 +36,7 @@ public class SatisController : Controller
         {
             productList = _productService.GetAll(x => (int)x.Category == enumType && x.IsDeleted == false);
         }
+
         var productDtoList = _mapper.Map<List<ResultProductDto>>(productList);
 
         var model = new ProductModelView
@@ -56,7 +56,7 @@ public class SatisController : Controller
             return BadRequest("Geçersiz barkod numarası.");
         }
 
-        var product = _productService.Get(x => x.Barcode == barcode && !x.IsDeleted); 
+        var product = _productService.Get(x => x.Barcode == barcode && !x.IsDeleted);
 
         if (product == null)
         {
@@ -64,10 +64,8 @@ public class SatisController : Controller
         }
 
         var productDto = _mapper.Map<ResultProductDto>(product);
-
         return Json(productDto);
     }
-
 
     [HttpGet]
     public IActionResult getAllItem()
@@ -84,27 +82,42 @@ public class SatisController : Controller
             return BadRequest("Geçersiz barkod numarası.");
         }
 
-       
-        var data = _sepetService.Get(x => x.Barcode == barcode);
+        var existingItem = _sepetService.Get(x => x.Barcode == barcode);
+        var product = _productService.Get(x => x.Barcode == barcode && !x.IsDeleted);
 
-        if (data == null)
+        if (product == null)
         {
-            Sepet item = new Sepet();
-            item.Barcode = barcode;
-            item.Name = _productService.Get(x => x.Barcode == barcode && !x.IsDeleted).Name;
-            item.Quantity = 1;
-            item.Price = _productService.Get(x => x.Barcode == barcode && !x.IsDeleted).SalePrice;
+            return NotFound("Ürün bulunamadı.");
+        }
 
-            var product = _sepetService.IncreaseOrAdd(item);
-            return Json(product);
+        if (existingItem == null && product.StockQuantity < 1)
+        {
+            return BadRequest($"{product.Name} ürünü stokta bulunmamaktadır.");
+        }
+
+        if (existingItem != null && existingItem.Quantity >= product.StockQuantity)
+        {
+            return BadRequest($"{product.Name} için yeterli stok yok. Mevcut stok: {product.StockQuantity}");
+        }
+
+        if (existingItem == null)
+        {
+            Sepet item = new Sepet
+            {
+                Barcode = barcode,
+                Name = product.Name,
+                Quantity = 1,
+                Price = product.SalePrice
+            };
+
+            var result = _sepetService.IncreaseOrAdd(item);
+            return Json(result);
         }
         else
         {
-            var product = _sepetService.IncreaseOrAdd(data);
-            return Json(product);
+            var result = _sepetService.IncreaseOrAdd(existingItem);
+            return Json(result);
         }
-
-
     }
 
     [HttpPost]
@@ -134,7 +147,6 @@ public class SatisController : Controller
     {
         var products = _productService.TGetList();
         var productDtoList = _mapper.Map<List<ResultProductDto>>(products);
-
         var categories = _productService.TGetList().Select(x => x.Category).Distinct().ToList();
 
         return Json(new
@@ -145,6 +157,22 @@ public class SatisController : Controller
     }
 
     [HttpPost]
+    public IActionResult Gift([FromBody] string barcode)
+    {
+        var sepetItem = _sepetService.Get(x => x.Barcode == barcode);
+
+        if (sepetItem == null)
+        {
+            return NotFound(new { success = false, message = "Ürün sepette bulunamadı." });
+        }
+
+        sepetItem.Price = 0;
+        _sepetService.TUpdate(sepetItem);
+
+        return Ok(new { success = true, message = "Ürün fiyatı başarıyla 0 TL olarak güncellendi." });
+    }
+
+    [HttpPost]
     public IActionResult CompleteSale([FromBody] SaleDto saleDto)
     {
         if (saleDto == null || saleDto.SaleItems == null || !saleDto.SaleItems.Any())
@@ -152,10 +180,13 @@ public class SatisController : Controller
             return BadRequest("Geçersiz satış verisi. Lütfen ürün ekleyin.");
         }
 
+        var cashierName = User.Identity.Name;
+
         var sale = new Sale
         {
             TotalAmount = saleDto.TotalAmount,
             Status = StatusEnum.Pending,
+            CashierName = cashierName,
             SaleItems = new List<SaleItem>()
         };
 
@@ -163,19 +194,21 @@ public class SatisController : Controller
         {
             var product = _productService.Get(x => x.Barcode == item.Barcode && !x.IsDeleted);
 
-            // Ürün yoksa veya yanlış barkod geldiyse hata dön
             if (product == null)
             {
                 return BadRequest($"Ürün bulunamadı! (Barkod: {item.Barcode})");
             }
 
-            // Stok yeterli mi kontrol et
             if (product.StockQuantity < item.Quantity)
             {
                 return BadRequest($"Stok yetersiz! ({product.Name} - Stok: {product.StockQuantity}, İstenen: {item.Quantity})");
             }
 
-            // Satış için ürünü ekle
+            if (item.UnitPrice == 0)
+            {
+                item.UnitPrice = 0;
+            }
+
             sale.SaleItems.Add(new SaleItem
             {
                 ProductId = product.Id,
@@ -183,15 +216,13 @@ public class SatisController : Controller
                 UnitPrice = item.UnitPrice
             });
 
-            // Stok güncelleme
             product.StockQuantity -= item.Quantity;
             _productService.TUpdate(product);
         }
+
         _saleService.TInsert(sale);
         _sepetService.RemoveAll();
+
         return Ok(new { message = "Satış başarıyla tamamlandı." });
-
     }
-
-
 }

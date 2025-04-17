@@ -7,5 +7,6 @@ namespace IGAMarket.WebUI.Models
     {
         public AddFireDto AddFireDto { get; set; }
         public List<SelectFireDto> ListFireDto { get; set; }
+        public List<Product> ProductList { get; set; }
     }
 }

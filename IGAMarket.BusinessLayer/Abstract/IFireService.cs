@@ -11,6 +11,7 @@ namespace IGAMarket.BusinessLayer.Abstract
     public interface IFireService : IGenericService<Fire>
     {
         List<SelectFireDto> GetDetailList();
+        void FireInsert(AddFireDto model);
         void UpdateById(long id);
     }
 }

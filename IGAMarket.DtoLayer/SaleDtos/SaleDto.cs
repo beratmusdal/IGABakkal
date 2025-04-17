@@ -15,8 +15,12 @@ namespace IGAMarket.DtoLayer.SaleDtos
         public DateTime CreateDate { get; set; }
         public bool IsDeleted { get; set; } = false;
         public StatusEnum Status { get; set; }
+
+        public string CashierName { get; set; } // ✅ Ekledik
+
         public List<SaleItemDto> SaleItems { get; set; }
     }
+
 
 
 

@@ -50,8 +50,17 @@ builder.Services.AddScoped<IDailyClosurDal, EfDailyClosurDal>();
 builder.Services.AddScoped<ISepetService, SepetManager>();
 builder.Services.AddScoped<ISepetDal, EfSepetDal>();
 
+
+
+
 // AutoMapper registration
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Login/LoginIndex"; // Login yapılmadan erişilirse buraya yönlendirme
+    options.AccessDeniedPath = "/Login/LoginIndex"; // Erişim izni olmayanlar bu sayfaya yönlendirilecek
+});
 
 var app = builder.Build();
 
@@ -71,11 +80,13 @@ app.UseRouting();
 
 
 app.UseAuthentication(); 
-app.UseAuthorization(); 
+app.UseAuthorization();
+//builder.WebHost.UseUrls("http://0.0.0.0:5050");
+
 
 // Routing
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Login}/{action=LoginIndex}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

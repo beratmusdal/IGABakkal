@@ -7,20 +7,25 @@ using IGAMarket.WebUI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace IGAMarket.WebUI.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Member")]
     public class DailyController : Controller
     {
         private readonly IProductService _productService;
         private readonly IDailyClosurService _dailyClosurService;
+        private readonly IFireService _fireService;
         private readonly IMapper _mapper;
 
-        public DailyController(IProductService productService, IDailyClosurService dailyClosurService, IMapper mapper)
+        public DailyController(
+            IProductService productService,
+            IDailyClosurService dailyClosurService,
+            IFireService fireService,
+            IMapper mapper)
         {
             _productService = productService;
             _dailyClosurService = dailyClosurService;
+            _fireService = fireService;
             _mapper = mapper;
         }
 
@@ -29,10 +34,15 @@ namespace IGAMarket.WebUI.Controllers
         {
             var productList = _productService.TGetList();
             var productDtoList = _mapper.Map<List<ResultProductDto>>(productList);
+            var today = DateTime.Today;
+            var totalFireQuantityToday = _fireService.GetAll()
+                .Where(x => x.CreateDate.Date == today && !x.IsDeleted)
+                .Sum(x => x.Quantity);
 
             var model = new ProductModelView
             {
-                ResultProductDto = productDtoList
+                ResultProductDto = productDtoList,
+                TodayFireCount = totalFireQuantityToday
             };
 
             return View(model);
