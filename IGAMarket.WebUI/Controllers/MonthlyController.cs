@@ -1,4 +1,5 @@
-﻿using IGAMarket.BusinessLayer.Abstract;
+﻿using ClosedXML.Excel;
+using IGAMarket.BusinessLayer.Abstract;
 using IGAMarket.DataAccessLayer.Abstract;
 using IGAMarket.DtoLayer.MonthlyDtos;
 using IGAMarket.WebUI.Models;
@@ -16,13 +17,15 @@ public class MonthlyController : Controller
     private readonly ISaleDal _saleDal;
     private readonly ISaleItemDal _saleItemDal;
     private readonly IProductService _productService;
+    private readonly IFireService _fireService;
 
-    public MonthlyController(IDailyClosurService dailyClosur, ISaleDal saleDal, ISaleItemDal saleItemDal, IProductService productService)
+    public MonthlyController(IDailyClosurService dailyClosur, ISaleDal saleDal, ISaleItemDal saleItemDal, IProductService productService, IFireService fireService)
     {
         _dailyClosur = dailyClosur;
         _saleDal = saleDal;
         _saleItemDal = saleItemDal;
         _productService = productService;
+        _fireService = fireService;
     }
 
     public IActionResult Index()
@@ -140,7 +143,7 @@ public class MonthlyController : Controller
                 g.DrawString(item.TotalRefund.ToString("N0") + " ₺", font, brush, 650, y);           
                 g.DrawString(item.TotalFireQuantity.ToString(), font, brush, 880, y);             
                 g.DrawString(item.TotalGiftQuantity.ToString(), font, brush, 1055, y);                
-                g.DrawString(item.PersonelName, font, brush, 1220, y);                                  
+                g.DrawString(item.PersonelName, font, brush, 1180, y);                                  
                 y += rowHeight;
             }
 
@@ -174,7 +177,7 @@ public class MonthlyController : Controller
 
 
     [HttpGet]
-    public IActionResult ExportMonthlyProductSalesToExcel(string month)
+    public IActionResult ExportMonthlyFiresToExcel(string month)
     {
         if (!DateTime.TryParseExact(month, "yyyy-MM", null, System.Globalization.DateTimeStyles.None, out DateTime parsedMonth))
             return BadRequest("Geçersiz tarih");
@@ -182,43 +185,62 @@ public class MonthlyController : Controller
         var startDate = parsedMonth;
         var endDate = parsedMonth.AddMonths(1).AddDays(-1);
 
-        // Satış itemlarını çekiyoruz
-        var saleItems = _saleItemDal.GetAll(x =>
-            x.CreateDate.Date >= startDate.Date &&
-            x.CreateDate.Date <= endDate.Date &&
-            !x.IsDeleted
-        );
-
-        var productList = _productService.TGetList();
-
-        var productSales = saleItems
-            .GroupBy(x => x.ProductId)
-            .Select(g => new
-            {
-                ProductName = productList.FirstOrDefault(p => p.Id == g.Key)?.Name ?? "(Ürün Yok)",
-                TotalQuantity = g.Sum(x => x.Quantity),
-                TotalRevenue = g.Sum(x => x.Quantity * x.UnitPrice)
-            }).ToList();
+        var fireList = _fireService.GetDetailList()
+            .Where(x => x.CreateDate.Date >= startDate.Date && x.CreateDate.Date <= endDate.Date && !x.IsDeleted)
+            .ToList();
 
         using var workbook = new ClosedXML.Excel.XLWorkbook();
-        var worksheet = workbook.Worksheets.Add($"{month} Satış Raporu");
+        var worksheet = workbook.Worksheets.Add($"{month} Hibe Raporu");
 
-        worksheet.Cell(1, 1).Value = "Ürün Adı";
-        worksheet.Cell(1, 2).Value = "Toplam Satış Adedi";
-        worksheet.Cell(1, 3).Value = "Toplam Gelir (₺)";
+        // Başlıklar
+        worksheet.Cell("A1").Value = "Tarih";
+        worksheet.Cell("B1").Value = "Ürün Adı";
+        worksheet.Cell("C1").Value = "Adet";
+        worksheet.Cell("D1").Value = "Toplam Zarar (₺)";
+        worksheet.Cell("E1").Value = "Açıklama";
 
-        for (int i = 0; i < productSales.Count; i++)
+        int row = 2;
+        foreach (var fire in fireList)
         {
-            worksheet.Cell(i + 2, 1).Value = productSales[i].ProductName;
-            worksheet.Cell(i + 2, 2).Value = productSales[i].TotalQuantity;
-            worksheet.Cell(i + 2, 3).Value = productSales[i].TotalRevenue;
+            worksheet.Cell(row, 1).Value = fire.CreateDate.ToString("dd.MM.yyyy");
+            worksheet.Cell(row, 2).Value = fire.Name ?? "(Ürün Yok)";
+            worksheet.Cell(row, 3).Value = fire.Quantity;
+            worksheet.Cell(row, 4).Value = fire.TotalPurchasePrice;
+            worksheet.Cell(row, 5).Value = fire.Reason ?? "-";
+
+            // Açıklama satırı çok uzunsa otomatik sarma
+            worksheet.Cell(row, 5).Style.Alignment.WrapText = true;
+
+            row++;
         }
+
+        // Başlık stili
+        var headerRange = worksheet.Range("A1:E1");
+        headerRange.Style.Font.Bold = true;
+        headerRange.Style.Fill.BackgroundColor = XLColor.LightGoldenrodYellow;
+        headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+        headerRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+        // Font & Stil ayarları
+        worksheet.Style.Font.FontName = "Arial";
+        worksheet.Style.Font.FontSize = 11;
+
+        // Otomatik hücre genişliği & yükseklik
+        worksheet.Columns().AdjustToContents();
+        worksheet.Rows().AdjustToContents();
+
+        // TL kolonunu formatla
+        worksheet.Column(4).Style.NumberFormat.Format = "#,##0.00";
 
         using var stream = new MemoryStream();
         workbook.SaveAs(stream);
         var content = stream.ToArray();
 
-        return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"UrunSatisRaporu_{month}.xlsx");
+        return File(content,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            $"HibeRaporu_{month}.xlsx");
     }
+
+
 
 }

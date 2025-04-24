@@ -239,3 +239,13 @@
 
     window.location.href = '/Monthly/ExportMonthlyProductSalesToExcel?month=' + month;
     });
+
+$('#exportGiftReport').on('click', function () {
+    var month = $('#closingMonth').val();
+    if (!month) {
+        alert("Lütfen bir kapanış ayı seçin.");
+        return;
+    }
+    window.location.href = '/Fire/ExportMonthlyFiresToExcel?month=' + month;
+});
+

@@ -18,6 +18,4 @@ public class AccountController : Controller
         return RedirectToAction("LoginIndex", "Login");
     }
 
-
-
 }

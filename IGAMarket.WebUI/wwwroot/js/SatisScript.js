@@ -1,15 +1,40 @@
-﻿
-getAllItem();
+﻿getAllItem();
 
-function handleEnterKey() {
+document.addEventListener('DOMContentLoaded', function () {
+    getAllItem();
+
     const barcodeInput = document.getElementById('barcodeInput');
-    const barcode = barcodeInput.value;
 
-    if (barcodeInput.value.length == 13) {
-        addToCart(barcode);
-        barcodeInput.value = '';
+    if (barcodeInput) {
+        barcodeInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const barcode = barcodeInput.value.trim();
+                if (barcode) {
+                    addToCart(barcode);
+                    barcodeInput.value = '';
+                }
+            }
+        });
+        barcodeInput.addEventListener('input', function () {
+            const searchValue = barcodeInput.value.trim().toLowerCase();
+            const productCards = document.querySelectorAll('.product-card');
+
+            productCards.forEach(card => {
+                const name = card.getAttribute('data-name')?.toLowerCase() || '';
+                const barcode = card.getAttribute('data-id')?.toLowerCase() || '';
+
+                if (name.includes(searchValue) || barcode.includes(searchValue)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
     }
-}
+});
+
+
 function clearCart() {
     fetch('/Satis/removeAllItem', {
         method: "POST",
@@ -25,7 +50,6 @@ function clearCart() {
             console.error("Hata:", error);
         });
 }
-
 function addToCart(barcode) {
     const productElement = document.querySelector(`.product-card[data-id="${barcode}"]`);
 

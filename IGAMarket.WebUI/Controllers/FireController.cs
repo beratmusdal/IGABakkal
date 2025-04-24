@@ -103,5 +103,50 @@ namespace IGAMarket.WebUI.Controllers
                 return Json(new { success = false, message = "Silme işlemi başarısız! " + ex.Message });
             }
         }
+
+        [HttpGet]
+        public IActionResult ExportMonthlyFiresToExcel(string month)
+        {
+            if (!DateTime.TryParseExact(month, "yyyy-MM", null, System.Globalization.DateTimeStyles.None, out DateTime parsedMonth))
+                return BadRequest("Geçersiz tarih");
+
+            var startDate = parsedMonth;
+            var endDate = parsedMonth.AddMonths(1).AddDays(-1);
+
+            var fireList = _fireService.GetDetailList()
+                .Where(x => x.CreateDate.Date >= startDate.Date && x.CreateDate.Date <= endDate.Date && !x.IsDeleted)
+                .ToList();
+
+            using var workbook = new ClosedXML.Excel.XLWorkbook();
+            var worksheet = workbook.Worksheets.Add($"{month} Hibe Raporu");
+
+            // Başlıklar
+            worksheet.Cell(1, 1).Value = "Tarih";
+            worksheet.Cell(1, 2).Value = "Ürün Adı";
+            worksheet.Cell(1, 3).Value = "Adet";
+            worksheet.Cell(1, 4).Value = "Toplam Zarar (₺)";
+            worksheet.Cell(1, 5).Value = "Açıklama";
+
+            int row = 2;
+            foreach (var fire in fireList)
+            {
+                worksheet.Cell(row, 1).Value = fire.CreateDate.ToString("dd.MM.yyyy");
+                worksheet.Cell(row, 2).Value = fire.Name ?? "(Ürün Yok)";
+                worksheet.Cell(row, 3).Value = fire.Quantity;
+                worksheet.Cell(row, 4).Value = fire.TotalPurchasePrice.ToString("N2") + " ₺";
+                worksheet.Cell(row, 5).Value = fire.Reason ?? "-";
+                row++;
+            }
+
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            var content = stream.ToArray();
+
+            return File(content,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"HibeRaporu_{month}.xlsx");
+        }
+
     }
 }
