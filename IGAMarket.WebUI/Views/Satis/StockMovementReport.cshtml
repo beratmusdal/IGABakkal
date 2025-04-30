@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewData["Title"] = "StockMovementReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1>Stok Girdiler - Çıktılar - Devredenler Raporu</h1>
+
+<div class="form-inline mb-3">
+    <label for="startDate">Başlangıç Tarihi:</label>
+    <input type="date" id="startDate" class="form-control mx-2" />
+
+    <label for="endDate">Bitiş Tarihi:</label>
+    <input type="date" id="endDate" class="form-control mx-2" />
+
+    <button class="btn btn-primary" onclick="getReport()">Raporu Getir</button>
+</div>
+
+<table class="table table-bordered" id="reportTable">
+    <thead>
+        <tr>
+            <th>Ürün Adı</th>
+            <th>Devir Stoğu</th>
+            <th>Giriş</th>
+            <th>Çıkış</th>
+            <th>Bitiş Devreden</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Dinamik olarak doldurulacak -->
+    </tbody>
+</table>
+
+<script>
+    function getReport() {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        if (!startDate || !endDate) {
+            alert("Başlangıç ve bitiş tarihi seçmelisiniz.");
+            return;
+        }
+
+        fetch(`/Satis/StockMovementReport?startDate=${startDate}&endDate=${endDate}`)
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('reportTable').querySelector('tbody');
+                tableBody.innerHTML = '';
+
+                data.forEach(item => {
+                    const row = `
+                        <tr>
+                            <td>${item.productName}</td>
+                            <td>${item.devir}</td>
+                            <td>${item.giris}</td>
+                            <td>${item.cikis}</td>
+                            <td>${item.bitis}</td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            })
+            .catch(error => {
+                console.error("Hata:", error);
+                alert("Rapor alınırken bir hata oluştu.");
+            });
+    }
+</script>

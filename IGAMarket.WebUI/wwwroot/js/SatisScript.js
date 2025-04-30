@@ -33,8 +33,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
-
-
 function clearCart() {
     fetch('/Satis/removeAllItem', {
         method: "POST",

@@ -57,7 +57,7 @@ public class MonthlyController : Controller
         var closureDtos = closures.Select(x => new MonthlyDto
         {
             CreateDate = x.CreateDate,
-            ZNo = x.ZNo, 
+            ZNo = x.ZNo,
             TotalAmount = x.TotalAmount,
             TotalRefund = x.TotalRefund,
             TotalFireQuantity = x.TotalFireQuantity,
@@ -137,13 +137,13 @@ public class MonthlyController : Controller
 
             foreach (var item in data)
             {
-                g.DrawString(item.CreateDate.ToString("dd.MM.yyyy"), font, brush, 30, y);             
-                g.DrawString(item.ZNo ?? "-", font, brush, 255, y);                                     
-                g.DrawString(item.TotalAmount.ToString("N0") + " ₺", font, brush, 435, y);           
-                g.DrawString(item.TotalRefund.ToString("N0") + " ₺", font, brush, 650, y);           
-                g.DrawString(item.TotalFireQuantity.ToString(), font, brush, 880, y);             
-                g.DrawString(item.TotalGiftQuantity.ToString(), font, brush, 1055, y);                
-                g.DrawString(item.PersonelName, font, brush, 1180, y);                                  
+                g.DrawString(item.CreateDate.ToString("dd.MM.yyyy"), font, brush, 30, y);
+                g.DrawString(item.ZNo ?? "-", font, brush, 255, y);
+                g.DrawString(item.TotalAmount.ToString("N0") + " ₺", font, brush, 435, y);
+                g.DrawString(item.TotalRefund.ToString("N0") + " ₺", font, brush, 650, y);
+                g.DrawString(item.TotalFireQuantity.ToString(), font, brush, 880, y);
+                g.DrawString(item.TotalGiftQuantity.ToString(), font, brush, 1055, y);
+                g.DrawString(item.PersonelName, font, brush, 1180, y);
                 y += rowHeight;
             }
 
@@ -173,6 +173,65 @@ public class MonthlyController : Controller
         doc.Save(outputPdfPath);
 
         return Ok();
+    }
+    [HttpGet]
+    public IActionResult ExportMonthlyProductSalesToExcel(string month)
+    {
+        if (!DateTime.TryParseExact(month, "yyyy-MM", null, System.Globalization.DateTimeStyles.None, out DateTime parsedMonth))
+            return BadRequest("Geçersiz tarih");
+
+        var startDate = parsedMonth;
+        var endDate = parsedMonth.AddMonths(1).AddDays(-1);
+
+        var saleItems = _saleItemDal.GetAll(x =>
+            x.CreateDate >= startDate &&
+            x.CreateDate <= endDate &&
+            !x.IsDeleted);
+
+        var products = _productService.TGetList();
+
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add($"{month} Ürün Satış Raporu");
+
+        // Başlıklar
+        worksheet.Cell("A1").Value = "Ürün Adı";
+        worksheet.Cell("B1").Value = "Toplam Satış Adeti";
+        worksheet.Cell("C1").Value = "Toplam Satış Tutarı";
+
+        var grouped = saleItems
+            .GroupBy(x => x.ProductId)
+            .Select(g => new
+            {
+                ProductName = products.FirstOrDefault(p => p.Id == g.Key)?.Name ?? "(Ürün Yok)",
+                TotalQuantity = g.Sum(x => x.Quantity),
+                TotalPrice = g.Sum(x => x.Quantity * x.UnitPrice)
+            })
+            .ToList();
+
+        int row = 2;
+        foreach (var item in grouped)
+        {
+            worksheet.Cell(row, 1).Value = item.ProductName;
+            worksheet.Cell(row, 2).Value = item.TotalQuantity;
+            worksheet.Cell(row, 3).Value = item.TotalPrice;
+            row++;
+        }
+
+        // Stil ve düzen
+        var headerRange = worksheet.Range("A1:C1");
+        headerRange.Style.Font.Bold = true;
+        headerRange.Style.Fill.BackgroundColor = XLColor.LightSteelBlue;
+        headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+        worksheet.Columns().AdjustToContents();
+
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        var content = stream.ToArray();
+
+        return File(content,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            $"UrunSatisRaporu_{month}.xlsx");
     }
 
 
@@ -240,7 +299,4 @@ public class MonthlyController : Controller
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             $"HibeRaporu_{month}.xlsx");
     }
-
-
-
 }

@@ -1,0 +1,98 @@
+﻿@{
+    ViewData["Title"] = "Stok Hareket Raporu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<div class="container mt-4">
+    <div class="card mb-4">
+        <div class="card-header bg-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">Stok Hareket Raporu</h3>
+                <a asp-controller="Monthly" asp-action="Index" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left"></i> Geri Dön
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <label for="startDate" class="form-label">Başlangıç Tarihi</label>
+            <input type="date" id="startDate" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label for="endDate" class="form-label">Bitiş Tarihi</label>
+            <input type="date" id="endDate" class="form-control" />
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button class="btn btn-primary w-100" onclick="getReport()">Raporu Getir</button>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover table-bordered text-center" id="reportTable">
+            <thead class="table-dark">
+                <tr>
+                    <th>Ürün Adı</th>
+                    <th>Devir Stoğu</th>
+                    <th>Giriş</th>
+                    <th>Çıkış</th>
+                    <th>Bitiş Devreden</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dinamik veri buraya gelecek -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function getReport() {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        if (!startDate || !endDate) {
+            alert("Başlangıç ve bitiş tarihlerini seçmelisiniz.");
+            return;
+        }
+
+        fetch(`/Satis/StockMovementReport?startDate=${startDate}&endDate=${endDate}`)
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('reportTable').querySelector('tbody');
+                tableBody.innerHTML = '';
+
+                data.forEach(item => {
+                    const row = `
+                        <tr>
+                            <td>${item.productName}</td>
+                            <td>${item.devir}</td>
+                            <td>${item.giris}</td>
+                            <td>${item.cikis}</td>
+                            <td>${item.bitis}</td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            })
+            .catch(error => {
+                console.error("Hata:", error);
+                alert("Rapor alınamadı.");
+            });
+    }
+
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const startDate = urlParams.get('startDate');
+        const endDate = urlParams.get('endDate');
+
+        if (startDate && endDate) {
+            $('#startDate').val(startDate);
+            $('#endDate').val(endDate);
+            getReport();
+        }
+    });
+</script>
+

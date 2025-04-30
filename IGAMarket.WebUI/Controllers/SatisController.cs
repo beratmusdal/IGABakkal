@@ -18,14 +18,16 @@ public class SatisController : Controller
     private readonly ISaleService _saleService;
     private readonly ISaleItemService _saleItemService;
     private readonly ISepetService _sepetService;
+    private readonly IStockMovementService _stockMovementService;
 
-    public SatisController(IProductService productService, IMapper mapper, ISaleService saleService, ISaleItemService saleItemService, ISepetService sepetService)
+    public SatisController(IProductService productService, IMapper mapper, ISaleService saleService, ISaleItemService saleItemService, ISepetService sepetService, IStockMovementService stockMovementService)
     {
         _productService = productService;
         _mapper = mapper;
         _saleService = saleService;
         _saleItemService = saleItemService;
         _sepetService = sepetService;
+        _stockMovementService = stockMovementService;
     }
 
     [HttpGet]
@@ -216,8 +218,19 @@ public class SatisController : Controller
                 UnitPrice = item.UnitPrice
             });
 
+            // 1. Stoktan düşüyoruz
             product.StockQuantity -= item.Quantity;
             _productService.TUpdate(product);
+
+            // 2. Stok hareketi kaydediyoruz
+            var stockMovement = new StockMovement
+            {
+                ProductId = product.Id,
+                Quantity = -item.Quantity, // satış olduğu için negatif
+                MovementDate = DateTime.Now,
+                MovementType = "Satış"
+            };
+            _stockMovementService.TInsert(stockMovement);
         }
 
         _saleService.TInsert(sale);
@@ -225,4 +238,41 @@ public class SatisController : Controller
 
         return Ok(new { message = "Satış başarıyla tamamlandı." });
     }
+
+    [HttpGet]
+    public IActionResult StockMovementReport(DateTime startDate, DateTime endDate)
+    {
+        var products = _productService.GetAll(x => !x.IsDeleted);
+        var movements = _stockMovementService.GetAll();
+
+        var report = products.Select(product => new
+        {
+            ProductName = product.Name,
+
+            Devir = movements
+                .Where(m => m.ProductId == product.Id && m.MovementDate < startDate)
+                .Sum(m => m.Quantity),
+
+            Giris = movements
+                .Where(m => m.ProductId == product.Id && m.MovementDate >= startDate && m.MovementDate <= endDate && m.Quantity > 0)
+                .Sum(m => m.Quantity),
+
+            Cikis = movements
+                .Where(m => m.ProductId == product.Id && m.MovementDate >= startDate && m.MovementDate <= endDate && m.Quantity < 0)
+                .Sum(m => Math.Abs(m.Quantity)),
+
+            Bitis = movements
+                .Where(m => m.ProductId == product.Id && m.MovementDate <= endDate)
+                .Sum(m => m.Quantity)
+        }).ToList();
+
+        return Json(report);
+    }
+    [HttpGet]
+    public IActionResult StockMovementReportView()
+    {
+        return View();
+    }
+
+
 }

@@ -32,5 +32,6 @@ namespace IGAMarket.DataAccessLayer.Concrete
         public DbSet<Fire> Fires { get; set; }
         public DbSet<DailyClosur> DailyClosures { get; set; }
         public DbSet<Sepet> Sepetler { get; set; }
+        public DbSet<StockMovement> StockMovements { get; set; }
     }
 }

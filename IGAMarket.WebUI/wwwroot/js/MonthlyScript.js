@@ -249,3 +249,22 @@ $('#exportGiftReport').on('click', function () {
     window.location.href = '/Fire/ExportMonthlyFiresToExcel?month=' + month;
 });
 
+$('#viewStockReportBtnLink').on('click', function (e) {
+    e.preventDefault();
+
+    var month = $('#closingMonth').val();
+    if (!month) {
+        alert("Lütfen geçerli bir ay seçin.");
+        return;
+    }
+
+    var startDate = month + "-01";
+    var endDate = new Date(new Date(startDate).getFullYear(), new Date(startDate).getMonth() + 1, 0)
+        .toISOString().split('T')[0];
+
+    window.location.href = `/Satis/StockMovementReportView?startDate=${startDate}&endDate=${endDate}`;
+});
+
+
+
+

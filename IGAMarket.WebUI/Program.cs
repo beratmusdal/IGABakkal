@@ -50,6 +50,10 @@ builder.Services.AddScoped<IDailyClosurDal, EfDailyClosurDal>();
 builder.Services.AddScoped<ISepetService, SepetManager>();
 builder.Services.AddScoped<ISepetDal, EfSepetDal>();
 
+builder.Services.AddScoped<IStockMovementService, StockMovementManager>();
+builder.Services.AddScoped<IStockMovementDal, EfStockMovementDal>();
+
+
 
 
 

@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "İşlemler Page";
 }
 <div class="container">
@@ -11,37 +10,49 @@
             </a>
         </div>
         <div class="row g-4">
-            <div class="col-md-6">
-                <div class="menu-card operation-card" >
-                     <a asp-controller="Product" asp-action="CreateProductIndex">
-                    <div class="card-icon">
-                        <i class="fas fa-chart-bar"></i>
-                    </div>
-                    <h3>Ürün Girişi</h3>
-                    <p>Yeni ürün ekleme ve stok girişi yapma</p>
-                    <div class="operation-info">
-                        <span class="badge bg-info">Stok Yönetimi</span>                        
-                    </div>
+            <div class="col-md-4">
+                <div class="menu-card operation-card">
+                    <a asp-controller="Product" asp-action="CreateProductIndex">
+                        <div class="card-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h3>Ürün Kayıt</h3>
+                        <p>Yeni ürün ekleme ve stok girişi yapma</p>
+                        <div class="operation-info">
+                            <span class="badge bg-info">Ürün Yönetimi</span>
+                        </div>
                     </a>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="menu-card operation-card">
-                     <a asp-controller="Fire" asp-action="CreateFireIndex">
-                    <div class="card-icon">
-                        <i class="fas fa-arrow-right"></i>
-                    </div>
-                    <h3>Hibe Giriş İşlemleri</h3>
-                    <p>Hibe ürün girişi ve takibi</p>
-                    <div class="operation-info">
-                        <span class="badge bg-warning">Hibe Yönetimi</span>                       
-                    </div>
+                    <a asp-controller="StockMovement" asp-action="StockMovementIndex">
+                        <div class="card-icon">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <h3>Stok Girişi</h3>
+                        <p>Yenilenen stok girişi</p>
+                        <div class="operation-info">
+                            <span class="badge bg-warning">Stok Yönetimi</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="menu-card operation-card">
+                    <a asp-controller="Fire" asp-action="CreateFireIndex">
+                        <div class="card-icon">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <h3>Hibe Giriş İşlemleri</h3>
+                        <p>Hibe ürün girişi ve takibi</p>
+                        <div class="operation-info">
+                            <span class="badge bg-warning">Hibe Yönetimi</span>
+                        </div>
                     </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
