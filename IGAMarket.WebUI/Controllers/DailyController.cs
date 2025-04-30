@@ -23,18 +23,20 @@ namespace IGAMarket.WebUI.Controllers
             IFireService fireService,
             IMapper mapper)
         {
-            _productService = productService;
-            _dailyClosurService = dailyClosurService;
-            _fireService = fireService;
-            _mapper = mapper;
+            _productService = productService ?? throw new ArgumentNullException(nameof(productService));
+            _dailyClosurService = dailyClosurService ?? throw new ArgumentNullException(nameof(dailyClosurService));
+            _fireService = fireService ?? throw new ArgumentNullException(nameof(fireService));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         [HttpGet]
         public IActionResult DailyIndex()
         {
+            var today = DateTime.Today;
+
             var productList = _productService.TGetList();
             var productDtoList = _mapper.Map<List<ResultProductDto>>(productList);
-            var today = DateTime.Today;
+
             var totalFireQuantityToday = _fireService.GetAll()
                 .Where(x => x.CreateDate.Date == today && !x.IsDeleted)
                 .Sum(x => x.Quantity);
@@ -49,8 +51,13 @@ namespace IGAMarket.WebUI.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdateProductStock([FromBody] ProductStockUpdateDto model)
+        public JsonResult UpdateProductStock([FromBody] ProductStockUpdateDto model)
         {
+            if (model == null || model.Id <= 0 || model.NewStock < 0)
+            {
+                return Json(new { success = false, message = "Geçersiz ürün bilgisi." });
+            }
+
             try
             {
                 _productService.UpdateProductStockQuantity(model.Id, model.NewStock);
@@ -58,23 +65,31 @@ namespace IGAMarket.WebUI.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Bir hata oluştu: " + ex.Message });
+                return Json(new { success = false, message = $"Stok güncellenemedi: {ex.Message}" });
             }
         }
 
         [HttpPost]
         public IActionResult CreateDaily(CreateDailyDto createDailyDto)
         {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Form verileri geçerli değil.";
+                return RedirectToAction("DailyIndex");
+            }
+
             try
             {
-                _dailyClosurService.TInsert(_mapper.Map<DailyClosur>(createDailyDto));
+                var entity = _mapper.Map<DailyClosur>(createDailyDto);
+                _dailyClosurService.TInsert(entity);
+
                 TempData["SuccessMessage"] = "Günlük kapanış başarıyla kaydedildi.";
                 return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "Günlük kapanış kaydedilirken bir hata oluştu: " + ex.Message);
-                return View("DailyIndex", createDailyDto);
+                TempData["ErrorMessage"] = $"Kapanış sırasında hata oluştu: {ex.Message}";
+                return RedirectToAction("DailyIndex");
             }
         }
     }

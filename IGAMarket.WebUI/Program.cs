@@ -1,92 +1,63 @@
-﻿using IGAMarket.BusinessLayer.Abstract;
-using IGAMarket.BusinessLayer.Concrete;
-using IGAMarket.DataAccessLayer.Abstract;
-using IGAMarket.DataAccessLayer.Concrete;
-using IGAMarket.DataAccessLayer.EntityFramework;
+﻿using IGAMarket.DataAccessLayer.Concrete;
 using IGAMarket.EntityLayer.Concrete;
+using IGAMarket.WebUI.Extensions;
 using IGAMarket.WebUI.Mapping;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// DbContext
 builder.Services.AddDbContext<Context>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Identity
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<Context>()
     .AddDefaultTokenProviders();
 
-
+// Cookie Ayarları
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Login/LoginIndex"; // Login yapılmadan erişilirse buraya yönlendirme
-    options.AccessDeniedPath = "/Login/LoginIndex"; // Erişim izni olmayanlar bu sayfaya yönlendirilecek
+    options.LoginPath = "/Login/LoginIndex";
+    options.AccessDeniedPath = "/Login/LoginIndex";
+    options.SlidingExpiration = true;
 });
 
-builder.Services.AddControllersWithViews(options =>
-{
-    options.Filters.Add(new AuthorizeFilter()); 
-}).AddRazorRuntimeCompilation();
+// Dependency Injection (custom servislerin)
+builder.Services.AddProjectDependencies();
 
-// Dependency Injection
-builder.Services.AddScoped<IProductService, ProductManager>();
-builder.Services.AddScoped<IProductDal, EfProductDal>();
-
-builder.Services.AddScoped<IFireService, FireManager>();
-builder.Services.AddScoped<IFireDal, EfFireDal>();
-
-builder.Services.AddScoped<ISaleService, SaleManager>();
-builder.Services.AddScoped<ISaleDal, EfSaleDal>();
-
-builder.Services.AddScoped<ISaleItemService, SaleItemManager>();
-builder.Services.AddScoped<ISaleItemDal, EfSaleItemDal>();
-
-builder.Services.AddScoped<IDailyClosurService, DailyClosurManager>();
-builder.Services.AddScoped<IDailyClosurDal, EfDailyClosurDal>();
-
-builder.Services.AddScoped<ISepetService, SepetManager>();
-builder.Services.AddScoped<ISepetDal, EfSepetDal>();
-
-builder.Services.AddScoped<IStockMovementService, StockMovementManager>();
-builder.Services.AddScoped<IStockMovementDal, EfStockMovementDal>();
-
-
-
-
-
-// AutoMapper registration
+// AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-builder.Services.ConfigureApplicationCookie(options =>
+// MVC & Authorization
+builder.Services.AddControllersWithViews(options =>
 {
-    options.LoginPath = "/Login/LoginIndex"; // Login yapılmadan erişilirse buraya yönlendirme
-    options.AccessDeniedPath = "/Login/LoginIndex"; // Erişim izni olmayanlar bu sayfaya yönlendirilecek
-});
+    options.Filters.Add(new AuthorizeFilter());
+}).AddRazorRuntimeCompilation();
 
 var app = builder.Build();
 
-
-// Error handling
+// Error Handling
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+else
+{
+    app.UseDeveloperExceptionPage(); // Geliştirme ortamında detaylı hata
+}
 
-// Middleware pipeline
+// Middleware Pipeline
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
-
-app.UseAuthentication(); 
+app.UseAuthentication();
 app.UseAuthorization();
-//builder.WebHost.UseUrls("http://0.0.0.0:5050");
-
 
 // Routing
 app.MapControllerRoute(
