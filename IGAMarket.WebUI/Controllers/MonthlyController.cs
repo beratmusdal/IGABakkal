@@ -44,7 +44,8 @@ public class MonthlyController : Controller
         }
 
         var startDate = parsedMonth;
-        var endDate = parsedMonth.AddMonths(1).AddDays(-1);
+        var endDate = parsedMonth.AddMonths(1).AddTicks(-1); 
+
 
         var closures = _dailyClosur.GetByDateRange(startDate, endDate);
         var giftItems = _saleItemDal.GetAll(x =>
@@ -181,7 +182,8 @@ public class MonthlyController : Controller
             return BadRequest("Geçersiz tarih");
 
         var startDate = parsedMonth;
-        var endDate = parsedMonth.AddMonths(1).AddDays(-1);
+        var endDate = parsedMonth.AddMonths(1).AddDays(-1).AddDays(1).AddTicks(-1);
+
 
         var saleItems = _saleItemDal.GetAll(x =>
             x.CreateDate >= startDate &&

@@ -1,19 +1,57 @@
-﻿
-                                        @model IGAMarket.EntityLayer.Concrete.StockMovement
+﻿@model IGAMarket.EntityLayer.Concrete.StockMovement
 @{
-    ViewData["Title"] = "StockMovementIndex";
+    ViewData["Title"] = "Stok Girişi";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h3>Stok Girişi Ekle</h3>
-<form asp-action="Add" method="post">
-    <div class="form-group">
-        <label>Ürün</label>
-        <select asp-for="ProductId" asp-items="@(new SelectList(ViewBag.Products, "Value", "Text"))" class="form-control"></select>
+<div class="container flex-grow-1 py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card product-entry-card">
+                <div class="card-header bg-white py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2 class="card-title mb-0">Stok Girişi Ekle</h2>
+                        <a asp-controller="Home" asp-action="IslemlerIndex" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left"></i> Geri Dön
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Add" method="post" class="needs-validation" novalidate>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="productId" class="form-label">Ürün Seçiniz</label>
+                                    <select asp-for="ProductId" asp-items="@(new SelectList(ViewBag.Products, "Value", "Text"))" class="form-control" required>
+                                        <option value="" disabled selected>Ürün Seçiniz</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Lütfen bir ürün seçiniz.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="quantity" class="form-label">Miktar</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" asp-for="Quantity" name="Quantity" step="1" min="1" required />
+                                        <span class="input-group-text">Ad</span>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Lütfen geçerli bir miktar giriniz.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg save-product-btn">
+                                <i class="fas fa-plus-circle me-2"></i>Stok Girişini Kaydet
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label>Miktar</label>
-        <input asp-for="Quantity" class="form-control" />
-    </div>
-    <button type="submit" class="btn btn-primary mt-2">Stok Girişini Kaydet</button>
-</form>
+</div>

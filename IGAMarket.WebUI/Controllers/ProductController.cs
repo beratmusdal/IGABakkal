@@ -18,7 +18,6 @@ namespace IGAMarket.WebUI.Controllers
             _productService = productService;
             _mapper = mapper;
         }
-
         [HttpGet]
         public IActionResult CreateProductIndex()
         {
@@ -29,13 +28,13 @@ namespace IGAMarket.WebUI.Controllers
             {
                 ResultProductDto = productDtoList
             };
-
             return View(model);
         }
-
         [HttpPost]
         public IActionResult CreateProductIndex(UpdateProductDto addProductDto)
         {
+            var existingProduct = _productService.Get(x => x.Id == addProductDto.Id);
+
             if (addProductDto.ImageFile != null)
             {
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(addProductDto.ImageFile.FileName);
@@ -50,7 +49,7 @@ namespace IGAMarket.WebUI.Controllers
             }
             else
             {
-                addProductDto.ImageUrl = "/images/b0ec052d-1ddc-4ef0-b19c-9c6deeedd6b8.png";
+                addProductDto.ImageUrl = existingProduct?.ImageUrl ?? "/images/default.png";
             }
 
             addProductDto.PurchasePrice = addProductDto.PurchasePrice.Replace(".", ",").Trim();

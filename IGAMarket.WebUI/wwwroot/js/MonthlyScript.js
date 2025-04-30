@@ -258,11 +258,14 @@ $('#viewStockReportBtnLink').on('click', function (e) {
         return;
     }
 
-    var startDate = month + "-01";
-    var endDate = new Date(new Date(startDate).getFullYear(), new Date(startDate).getMonth() + 1, 0)
-        .toISOString().split('T')[0];
+    var start = new Date(month + "-01T00:00:00");
+    var end = new Date(start.getFullYear(), start.getMonth() + 1, 0, 23, 59, 59); // ayın son günü 23:59:59
+
+    var startDate = start.toISOString();
+    var endDate = end.toISOString();
 
     window.location.href = `/Satis/StockMovementReportView?startDate=${startDate}&endDate=${endDate}`;
+
 });
 
 
