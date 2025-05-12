@@ -79,10 +79,6 @@ public class SatisController : Controller
     [HttpPost]
     public IActionResult increaseItem([FromBody] string barcode)
     {
-        //if (barcode.Length < 13)
-        //{
-        //    return BadRequest("Geçersiz barkod numarası.");
-        //}
 
         var existingItem = _sepetService.Get(x => x.Barcode == barcode);
         var product = _productService.Get(x => x.Barcode == barcode && !x.IsDeleted);
@@ -226,7 +222,7 @@ public class SatisController : Controller
             var stockMovement = new StockMovement
             {
                 ProductId = product.Id,
-                Quantity = -item.Quantity, // satış olduğu için negatif
+                Quantity = -item.Quantity, 
                 MovementDate = DateTime.Now,
                 MovementType = "Satış"
             };

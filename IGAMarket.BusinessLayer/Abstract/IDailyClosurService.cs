@@ -8,8 +8,7 @@ namespace IGAMarket.BusinessLayer.Abstract
 {
     public interface IDailyClosurService : IGenericService<DailyClosur>
     {
-        List<DailyClosur> GetByDateRange(DateTime startDate, DateTime endDate);
-   
+        List<DailyClosur> GetByDateRange(DateTime startDate, DateTime endDate);   
 
     }
 }

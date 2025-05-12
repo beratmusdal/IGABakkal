@@ -47,7 +47,7 @@ if (!app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseDeveloperExceptionPage(); // Geliştirme ortamında detaylı hata
+    app.UseDeveloperExceptionPage(); 
 }
 
 // Middleware Pipeline
